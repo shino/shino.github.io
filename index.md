@@ -1,18 +1,9 @@
 # Top page
 
-## ばーーーーー
+Random text by shino
 
-```
-% curl http://shino.github.io
-```
+## sandbox
 
-## Math
+Relative link, in site
 
-in line, $x^2 + y^2 = 1$
-
-source
-
-``` markdown
-in line, $x^2 + y^2 = 1$
-```
-
+[a link to md sandbox in subdirectory](sandbox/markdown-sandbox.md)
