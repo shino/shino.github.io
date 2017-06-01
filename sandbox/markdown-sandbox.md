@@ -11,7 +11,7 @@
 
 ## Math
 
-** DON'T WORK in github pages **
+**DON'T WORK in github pages**
 
 in line, $x^2 + y^2 = 1$
 
