@@ -7,7 +7,8 @@
 | 1            | 2             | 3              |
 | aa           | bb            | cc             |
 
-
+cf. [Markdown で表(テーブル)を描く - Qiita](
+  http://qiita.com/nanasess/items/c9342c06a3e28e64aeb8)
 
 ## Math
 
