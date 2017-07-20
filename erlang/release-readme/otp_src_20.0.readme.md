@@ -1,3 +1,4 @@
+```
 Patch Package:           OTP 20.0
 Git Tag:                 OTP-20.0
 Date:                    2017-06-21
@@ -74,11 +75,15 @@ Predecessor:             OTP
 
  Check out the git tag OTP-20.0, and build a full OTP system including
  documentation.
+```
 
+```
  ---------------------------------------------------------------------
  --- HIGHLIGHTS ------------------------------------------------------
  ---------------------------------------------------------------------
+```
 
+```
   OTP-10289    Application(s): stdlib
                Related Id(s): OTP-10309
 
@@ -93,8 +98,19 @@ Predecessor:             OTP
 
                The old string API have been marked as obsolete. The
                return values have been changed for some error cases.
+```
 
+- 文字列のユニコードサポート。
+- unicode モジュールに正規化関数を追加。
+- string モジュール API を拡張: 改善されたユニコード処理
+  と書要素クラスタに対して機能する関数を追加。
+  新しい関数は unicode:chardata() 型に作用するため、
+  UTF-8 バイナリを入力として受け取る。
 
+- 古い string API は obsolete とマークされた。
+- 返り値が幾つかのエラーケースで変更された。
+
+```
   OTP-13820    Application(s): ssl
 
                *** POTENTIAL INCOMPATIBILITY ***
@@ -108,6 +124,15 @@ Predecessor:             OTP
                smoother. Potentially, but unlikely, this could cause a
                problem with older servers if they do not adhere to the
                RFC and ignore unknown extensions.
+```
+
+- TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
+  信するようになった。以前のバージョンでは最も低いサポートバージョ
+  ンで送っていた。これは最新の RFC で支持される変更である。
+
+- これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
+  は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
+  間で問題になるかもしれない。
 
 
   OTP-13900    Application(s): crypto
@@ -128,6 +153,8 @@ Predecessor:             OTP
 
                (Thanks to dszoboszlay and legoscia)
 
+               - [SS] 参照: FIPS mode Erlang -- FIPS mode
+                 http://erlang.org/doc/apps/crypto/fips.html
 
   OTP-14059    Application(s): kernel, stdlib
 
@@ -138,6 +165,13 @@ Predecessor:             OTP
                module, mm/0 is short for code:modified_modules/0, and
                lm/0 reloads all currently loaded modules that have
                changed on disk.
+
+               - 変更されたコードを検知する関数が追加された
+               - code:modified_modules/0 はロードされているモジュールの中で
+                 ディスク上変更されているものを、すべて返す
+               - code:module_status/1 はモジュールの状態を返す
+               - シェルと c モジュールでは mm/0 が code:modified_modules/0 の
+                 短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
 
 
   OTP-14094    Application(s): stdlib
@@ -167,6 +201,9 @@ Predecessor:             OTP
                this value. If large amounts of named tables are used
                and ERL_MAX_ETS_TABLES hasn't been increased, the
                performance of named table lookup will degrade.
+
+               - ETS の操作を、テーブル識別子の型を integer から reference に
+                 変更することで最適化した。
 
 
   OTP-14110    Application(s): ssh
