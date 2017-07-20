@@ -7,3 +7,7 @@ Random text by shino
 Relative link, in site
 
 [a link to md sandbox in subdirectory](sandbox/markdown-sandbox.md)
+
+## plain text
+
+[a link to txt](plain-text.txt)
