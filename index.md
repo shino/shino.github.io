@@ -4,7 +4,7 @@ Random text by shino
 
 ## Erlang/OTP
 
-Release README's
+Release README's, partially translated to Japanese.
 
 - [OTP 20.0](erlang/release-readme/otp_src_20.0.readme.txt)
 
