@@ -1,3 +1,7 @@
+---
+title: Erlang/OTP 20.0 Release README
+---
+
 Erlang/OTP 20.0 Release README
 ==============================
 
