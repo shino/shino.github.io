@@ -1065,7 +1065,7 @@ POTENTIAL INCOMPATIBILITIES
 ### OTP-14531    Application(s): stdlib
 
 - 状態機械のエンジン `gen_statem` が総称的なタイムアウト(複数の名前付き)と、
-  絶対タイムアウト時間を処理できるようになった。ドキュメントを参照のこと。
+  絶対タイムアウト時刻を処理できるようになった。ドキュメントを参照のこと。
 - `gen_statem` のコールバック `Module:init/1` は、他の `gen_*` モジュールと
   調和するよう、必須となった。これは `gen_statem:enter_loop/4-6` を利用していた
   `gen_statem` コールバックモジュールには非互換となる可能性がある。
