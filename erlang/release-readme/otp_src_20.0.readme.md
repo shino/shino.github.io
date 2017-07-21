@@ -1,4 +1,3 @@
-
 Erlang/OTP XX.X Release README
 ==============================
 
@@ -88,6 +87,13 @@ HIGHLIGHTS
 
 - Related Id(s): OTP-10309
 - **POTENTIAL INCOMPATIBILITY**
+- 文字列のユニコードサポート。
+  - unicode モジュールに正規化関数を追加。
+  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
+    して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
+    UTF-8 バイナリを入力として受け取る。
+- 古い string API は obsolete とマークされた。
+- 返り値が幾つかのエラーケースで変更された。
 
 ```
                Related Id(s): OTP-10309
@@ -108,6 +114,12 @@ HIGHLIGHTS
 ### OTP-13820    Application(s): ssl
 
 - **POTENTIAL INCOMPATIBILITY**
+- TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
+  信するようになった。以前のバージョンでは最も低いサポートバージョ
+  ンで送っていた。これは最新の RFC で支持される変更である。
+- これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
+  は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
+  間で問題になるかもしれない。
 
 ```
                *** POTENTIAL INCOMPATIBILITY ***
@@ -125,6 +137,7 @@ HIGHLIGHTS
 
 ### OTP-13900    Application(s): crypto
 
+- crypto アプリケーションが OpenSSL 1.1 をサポート
 
 ```
                The crypto application now supports OpenSSL 1.1.
@@ -133,6 +146,12 @@ HIGHLIGHTS
 ### OTP-13921    Application(s): crypto, ssl
 
 - Related Id(s): PR-1180
+- Erlang/OTP が OpenSSL を FIPS-140 モードで利用できるようになった。
+  - 特定のセキュリティ要請(主に US 連邦政府の幾つかの部門)を満たすため
+- ビルドとデフォルトでは無効化されている FIPS サポートの使い方は、
+  新しい crypto ユーザーズガイドの "FIPS mode" の章を参考。
+- cf. FIPS mode Erlang -- FIPS mode
+  http://erlang.org/doc/apps/crypto/fips.html
 
 ```
                Related Id(s): PR-1180
@@ -150,6 +169,12 @@ HIGHLIGHTS
 
 ### OTP-14059    Application(s): kernel, stdlib
 
+- 変更されたコードを検知する関数が追加された
+- code:modified_modules/0 はロードされているモジュールの中で
+  ディスク上変更されているものを、すべて返す
+- code:module_status/1 はモジュールの状態を返す
+- シェルと c モジュールでは mm/0 が code:modified_modules/0 の
+  短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
 
 ```
                Functions for detecting changed code has been added.
@@ -164,6 +189,22 @@ HIGHLIGHTS
 ### OTP-14094    Application(s): stdlib
 
 - **POTENTIAL INCOMPATIBILITY**
+- ETS の操作を、テーブル識別子の型を integer から reference に
+  変更することで最適化した。
+  - reference はより少ない潜在的なロックコンテンションで、より直接の
+    テーブルへのマッピングを可能にする。
+  - 特にテーブルの生成と削除がよりスケールする。
+- 不透明型である ETS テーブル識別子の変更は、その不透明型に誤った
+  仮定を置いているコードでうまく動かないかもしれない。
+- 単一の Eralng ノードで保存できるテーブル数は、 **以前は** 限定されていたが、
+  もはや当てはまらない(メモリー使用を除いて)。
+  - 以前のデフォルト制限は 1400 テーブルで、 `ERL_MAX_ETS_TABLES` 環境
+    変数によって増加可能であった。このハードリミットは除外されたが、
+    `ERL_MAX_ETS_TABLES` を設定するのは現在も有用である。
+  - `ERL_MAX_ETS_TABLES` は、使用されるテーブルのおおよその最大数に設定される
+    べきである。これは、この値を使って内部的に名前付きテーブルがつくられるから
+    である。もし、多くの名前付きテーブルが作成され、 `ERL_MAX_ETS_TABLES` が
+    増やされていない場合、名前付きテーブルのルックアップ性能が落ちる。
 
 ```
                *** POTENTIAL INCOMPATIBILITY ***
@@ -196,6 +237,26 @@ HIGHLIGHTS
 ### OTP-14110    Application(s): ssh
 
 - **POTENTIAL INCOMPATIBILITY**
+- キー交換アルゴリズムの最新化。 `draft-ietf-curdle-ssh-kex-sha2` の議論を
+  参照。
+- 旧式の脆弱なアルゴリズムを削除し、より強固な後任を追加。
+  - 最新の ssh クライアント、サーバとの相互運用性を保つため。
+  - アルゴリズムのデフォルト順序も調整されている。
+- 撤去: 近年では安全ではない `diffie-hellman-group1-sha1` キー交換がデフォルトで
+  は有効にならなくなった。これはオプション `preferred-algorithms` で有効化出来る。
+- 追加: 以下の、新しくより強固なキー交換アルゴリズムが追加され、デフォルトで
+  有効化された。
+  - `diffie-hellman-group16-sha512`
+  - `diffie-hellman-group18-sha512`
+  - `diffie-hellman-group14-sha256`
+- 疑問の余地が残る [RFC 6197] SHA1 ベースのアルゴリズム
+  `diffie-hellman-group-exchange-sha1` と
+  `diffie-hellman-group14-sha1` は、依然としてデフォルト有効のままである。
+  - 最新のキー交換アルゴリズムを備えていない、昔からのクライアント、サーバーとの
+    互換性を保つためである。
+  - `draft-ietf-curdle-ssh-kex-sha2` が RFC になった場合、これらの SHA1 ベースの
+    アルゴリズムは IETF により廃止予定となる。それらは Erlang/OTP のデフォルト
+    から外れるかもしれない。
 
 ```
                *** POTENTIAL INCOMPATIBILITY ***
@@ -234,6 +295,20 @@ HIGHLIGHTS
 ### OTP-14152    Application(s): erts
 
 - **POTENTIAL INCOMPATIBILITY**
+- ダーティースケジューラー有効になり、SMP の Erlang ランタイムシステムでサポート
+  される
+- ダーティー NIF サポートに加えて、ダーティー BIF とダーティーガベージコレクション
+  も導入された。
+  - 完了までに長時間かかる可能性のあるすべてのガベージコレクションは、
+    有効であればダーティースケジューラー上で実行される。
+- スケジューラーとランキュー状態を調査する `erlang:statistics/1` は、
+  ダーティースケジューラー対応で変更された。
+  - この関数を使っているコードは、非互換性を考慮した書き換えを必要とする
+    かもしれない。
+  - 影響を受ける呼び出し例
+    - `erlang:statistics(scheduler_wall_time)`
+    - `statistics(total_run_queue_lengths)`
+    - `statistics(total_active_tasks)` など
 
 ```
                *** POTENTIAL INCOMPATIBILITY ***
@@ -259,6 +334,7 @@ HIGHLIGHTS
 
 ### OTP-14178    Application(s): compiler, erts
 
+- アトムは任意のユニコード文字を含むことが出来る。
 
 ```
                Atoms may now contain arbitrary Unicode characters.
@@ -266,6 +342,9 @@ HIGHLIGHTS
 
 ### OTP-14183    Application(s): stdlib
 
+- `gen_fsm` は廃止予定となり、 `gen_statem` に置き換えられた。
+  - しかし、後方互換製のため、 `gen_fsm` はかなり長期間に渡り、
+    隠し機能として存在し続けるだろう。
 
 ```
                gen_fsm is deprecated and is replaced by gen_statem,
@@ -276,6 +355,10 @@ HIGHLIGHTS
 
 ### OTP-14193    Application(s): ssh
 
+- 拡張ネゴシエーション機構と、 `draft-ietf-curdle-ssh-ext-info-05` の
+  `server-sig-algs` 拡張が実装された。
+- 関係する `draft-ietf-curdle-ssh-ext-info-05` が実装され、シグネチャ
+  アルゴリズム `rsa-sha2-256` と `rsa-sha2-512` が導入された。
 
 ```
                The Extension Negotiation Mechanism and the extension
@@ -289,6 +372,13 @@ HIGHLIGHTS
 
 ### OTP-14197    Application(s): ssl
 
+- TLS クライアントプロセスがデフォルトで `public_key:pkix_verify_hostname/2` を
+  呼ぶようになった。
+  - 証明書パス検証確認において、接続のホスト名をサーバ証明書のホスト名
+    を検証するため。
+  - ユーザーは明示的にこれを無効化出来る。
+  - またホスト名が `connect` の第一引数から得られない場合や、
+    サーバー名を指示するオプションが与えられない場合にはこの検査は行われない。
 
 ```
                TLS client processes will by default call
@@ -303,6 +393,14 @@ HIGHLIGHTS
 
 ### OTP-14205    Application(s): erts
 
+- その場しのぎのマジックバイナリはすべて erlang reference の使用に置き換えられた。
+- マジックバイナリは空のバイナリとして使われていたが、実際には Erlang VM 内部の
+  他のデータを参照していた。
+  - それらが空バイナリであったため、異なるマジックバイナリは等価で、また
+    erlang ノードからカイブに渡される際には内部データが失われていた。
+- 新しい reference の利用はこれらのセマンティック上の奇妙な問題を持たず、
+  また性能とメモリ使用の利点がマジックバイナリと同じになるよう最適化されている。
+- マジックバイナリを使用していた例として、マッチ仕様と NIF リソースが挙げられる。
 
 ```
                All uses of the magic binary kludge has been replaced
@@ -327,6 +425,8 @@ HIGHLIGHTS
 
 ### OTP-14219    Application(s): asn1
 
+- 新しい `maps` オプションは、 `SEQUENCE` と `SET` の型の表現を(レコードではな
+  く)マップに変更する。
 
 ```
                The new 'maps' option changes the representation of the
@@ -335,6 +435,16 @@ HIGHLIGHTS
 
 ### OTP-14226    Application(s): stdlib
 
+- 以前の OTP バージョンにあった `erl_tar` は `USTAR` フォーマットのみを
+  サポートしていた。 これはパス名をたかだか 255 バイトまでに制限しており、
+  かつユニコード文字を含む名前をポータブルな方法でサポートしてなかった。
+- 本バージョンで `erl_tar` のサポート形式が拡張された。
+  - tar アーカイブを読み取る際には、現在よく使われる形式、例えば`v7`、`STAR`、
+    `USTAR`、`PAX`、そして GNU tar の `STAR/USTAR` への拡張形式をサポートする。
+  - tar アーカイブを書き込む際には、`erl_tar` は必要な場合(例えば長いファイル名
+    やユニコード文字をファイル名に用いる場合)には `PAX` フォーマットで書き込む。
+  - 可能であれば、`erl_tar` は今後も tar アーカイブを `USTAR` 形式で書き込む。
+    これは最大限のポータビリティーのためである。
 
 ```
                erl_tar in previous versions of OTP only supports the
@@ -355,6 +465,11 @@ HIGHLIGHTS
 
 ### OTP-14291    Application(s): ssl
 
+- `connection_information/[1,2]` を拡張。
+  - `session_id` と `master_secret`、 `client_random`、`server_random` は
+    `connection_information/2` からアクセスできない。
+  - 注意: `session_id` は `connection_information/1` にのみ追加されている。
+  - この根拠は、接続のセキュリティに関する値は明示的に要求されるべきだからである。
 
 ```
                Extend connection_information/[1,2] . The values
@@ -369,6 +484,11 @@ HIGHLIGHTS
 ### OTP-14319    Application(s): stdlib
 
 - Related Id(s): PR-1076
+- 新しい関数 `ets:select_replace/2` を追加
+  - これはアトミックな "compare-and-swap" 操作を ETS オブジェクトに対して
+- [訳注] アトミック性
+  - オブジェクト個々にはアトミックだが、イテレーション全体にはその保証はない
+  - cf. http://erlang.org/doc/man/ets.html#select_replace-2
 
 ```
                Related Id(s): PR-1076
@@ -382,6 +502,15 @@ HIGHLIGHTS
 
 - Related Id(s): ERL-208
 - **POTENTIAL INCOMPATIBILITY**
+- OTP 内部の PCRE ライブラリバージョンを 8.33 から 8.44 にアップグレード。
+  - このライブラリは正規表現モジュールの実装に使われている。
+- 様々なバグ修正とともに、新バージョンはより良いスタック保護を可能にする。
+  - この機能を利用するため、すべてのプラットフォームにおいて、標準のスケジューラ
+    スレッドのスタックサイズがデフォルトで 128 kilo words に設定される。
+  - このスタックサイズはシステム開始時に `+sss` コマンドライン引数を `erl`
+    コマンドに渡すことで設定できる。
+- PCRE の 8.33 から 8.40 の間の変更に関しては
+  http://pcre.org/original/changelog.txt を参照のこと。
 
 ```
                Related Id(s): ERL-208
@@ -407,6 +536,9 @@ HIGHLIGHTS
 
 ### OTP-14356    Application(s): erts
 
+- 様々な VM 内部のタイマー管理の改善。
+  - これらの改善は timer wheel のメモリ消費を削減し、またタイマー処理に
+    必要な作業量を減少させる。
 
 ```
                Various improvements of timer management internally in
@@ -418,6 +550,10 @@ HIGHLIGHTS
 
 ### OTP-14388    Application(s): ssl
 
+- DTLS の基本的なサポート。
+  - OpenSSL と共にテストされている。
+- `{protocol, dtls}` のオプションを `ssl` API 関数に渡すことで
+  接続と listen をテスト。
 
 ```
                Basic support for DTLS that been tested together with
@@ -429,6 +565,15 @@ HIGHLIGHTS
 
 ### OTP-14407    Application(s): erts, otp
 
+- `./configure --enable-lock-counter` はロックカウントをサポートする
+  特別なエミュレーターのビルドを有効にする。
+  - (このオプションは以前にも存在したが、デフォルトエミュレータの
+    ビルドをロックカウント付きにするスイッチだった)
+  - ロックカウントエミュレーターを開始するには `erl -emu_type lcnt` を
+    用いる。
+- Windows 上の `erl` は、コンパイルされたエミュレーターを開始するために、
+  隠しオプション `-debug` があった。
+  - そのオプションは削除され、 `erl -emu_type debug` を代わりに使用すること。
 
 ```
                './configure --enable-lock-counter' will enabling
@@ -443,6 +588,8 @@ HIGHLIGHTS
                option has been removed. Use 'erl -emu_type debug'
                instead.
 ```
+
+# *TODO: after here not processed*
 
 POTENTIAL INCOMPATIBILITIES
 ===========================
