@@ -287,14 +287,25 @@ Predecessor:             OTP
 
 ```
 
+## OTP-14152    Application(s): erts
 
-*TODO: after here not processed*
+- **POTENTIAL INCOMPATIBILITY**
+- ダーティースケジューラー有効になり、SMP の Erlang ランタイムシステムでサポート
+  される
+- ダーティー NIF サポートに加えて、ダーティー BIF とダーティーガベージコレクション
+  も導入された。
+  - 完了までに長時間かかる可能性のあるすべてのガベージコレクションは、
+    有効であればダーティースケジューラー上で実行される。
+- スケジューラーとランキュー状態を調査する `erlang:statistics/1` は、
+  ダーティースケジューラー対応で変更された。
+  - この関数を使っているコードは、非互換性を考慮した書き換えを必要とする
+    かもしれない。
+  - 影響を受ける呼び出し例
+    - `erlang:statistics(scheduler_wall_time)`
+    - `statistics(total_run_queue_lengths)`
+    - `statistics(total_active_tasks)` など
 
 ```
-
-
-  OTP-14152    Application(s): erts
-
                *** POTENTIAL INCOMPATIBILITY ***
 
                Dirty schedulers are now enabled and supported on
@@ -314,6 +325,13 @@ Predecessor:             OTP
                erlang:statistics(scheduler_wall_time),
                statistics(total_run_queue_lengths),
                statistics(total_active_tasks), etc.
+```
+
+*TODO: after here not processed*
+
+```
+
+
 
 
   OTP-14178    Application(s): compiler, erts
