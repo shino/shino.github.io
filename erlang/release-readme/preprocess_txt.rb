@@ -17,7 +17,7 @@ end
 def read_body1(lines)
   loop do
     line = lines.peek()
-    if (/^ -{60}/ =~ line) || (/^  OTP-/ =~ line)
+    if (/^ -{3}/ =~ line) || (/^  OTP-/ =~ line)
       break
     else
       if line.chomp.length > 0
