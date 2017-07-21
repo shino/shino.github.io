@@ -1,4 +1,5 @@
 ---
+layout: default
 title: Erlang/OTP 20.0 Release README
 ---
 
