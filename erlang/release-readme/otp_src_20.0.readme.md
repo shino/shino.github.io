@@ -327,28 +327,35 @@ Predecessor:             OTP
                statistics(total_active_tasks), etc.
 ```
 
-*TODO: after here not processed*
+# OTP-14178    Application(s): compiler, erts
+
+- アトムは任意のユニコード文字を含むことが出来る。
 
 ```
-
-
-
-
-  OTP-14178    Application(s): compiler, erts
-
                Atoms may now contain arbitrary Unicode characters.
+```
 
+# OTP-14183    Application(s): stdlib
 
-  OTP-14183    Application(s): stdlib
+- `gen_fsm` は廃止予定となり、 `gen_statem` に置き換えられた。
+  - しかし、後方互換製のため、 `gen_fsm` はかなり長期間に渡り、
+    隠し機能として存在し続けるだろう。
 
+```
                gen_fsm is deprecated and is replaced by gen_statem,
                however for backwards compatibility reasons gen_fsm may
                continue to exist as an undocumented feature for quite
                some time.
+```
 
+# OTP-14193    Application(s): ssh
 
-  OTP-14193    Application(s): ssh
+- 拡張ネゴシエーション機構と、 `draft-ietf-curdle-ssh-ext-info-05` の
+  `server-sig-algs` 拡張が実装された。
+- 関係する `draft-ietf-curdle-ssh-ext-info-05` が実装され、シグネチャ
+  アルゴリズム `rsa-sha2-256` と `rsa-sha2-512` が導入された。
 
+```
                The Extension Negotiation Mechanism and the extension
                server-sig-algs in draft-ietf-curdle-ssh-ext-info-05
                are implemented.
@@ -356,10 +363,19 @@ Predecessor:             OTP
                The related draft-ietf-curdle-rsa-sha2-05 is
                implemented and introduces the signature algorithms
                rsa-sha2-256 and rsa-sha2-512.
+```
 
+# OTP-14197    Application(s): ssl
 
-  OTP-14197    Application(s): ssl
+- TLS クライアントプロセスがデフォルトで `public_key:pkix_verify_hostname/2` を
+  呼ぶようになった。
+  - 証明書パス検証確認において、接続のホスト名をサーバ証明書のホスト名
+    を検証するため。
+  - ユーザーは明示的にこれを無効化出来る。
+  - またホスト名が `connect` の第一引数から得られない場合や、
+    サーバー名を指示するオプションが与えられない場合にはこの検査は行われない。
 
+```
                TLS client processes will by default call
                public_key:pkix_verify_hostname/2 to verify the
                hostname of the connection with the server certificates
@@ -368,10 +384,20 @@ Predecessor:             OTP
                hostname can not be derived from the first argument to
                connect or is not supplied by the server name
                indication option, the check will not be performed.
+```
 
+# OTP-14205    Application(s): erts
 
-  OTP-14205    Application(s): erts
+- その場しのぎのマジックバイナリはすべて erlang reference の使用に置き換えられた。
+- マジックバイナリは空のバイナリとして使われていたが、実際には Erlang VM 内部の
+  他のデータを参照していた。
+  - それらが空バイナリであったため、異なるマジックバイナリは等価で、また
+    erlang ノードからカイブに渡される際には内部データが失われていた。
+- 新しい reference の利用はこれらのセマンティック上の奇妙な問題を持たず、
+  また性能とメモリ使用の利点がマジックバイナリと同じになるよう最適化されている。
+- マジックバイナリを使用していた例として、マッチ仕様と NIF リソースが挙げられる。
 
+```
                All uses of the magic binary kludge has been replaced
                by uses of erlang references.
 
@@ -390,16 +416,32 @@ Predecessor:             OTP
 
                A couple of examples of previous uses of magic binaries
                are match specifications and NIF resources.
+```
 
+# OTP-14219    Application(s): asn1
 
-  OTP-14219    Application(s): asn1
+- 新しい `maps` オプションは、 `SEQUENCE` と `SET` の型の表現を(レコードではな
+  く)マップに変更する。
 
+```
                The new 'maps' option changes the representation of the
                types SEQUENCE and SET to be maps (instead of records).
+```
 
+# OTP-14226    Application(s): stdlib
 
-  OTP-14226    Application(s): stdlib
+- 以前の OTP バージョンにあった `erl_tar` は `USTAR` フォーマットのみを
+  サポートしていた。 これはパス名をたかだか 255 バイトまでに制限しており、
+  かつユニコード文字を含む名前をポータブルな方法でサポートしてなかった。
+- 本バージョンで `erl_tar` のサポート形式が拡張された。
+  - tar アーカイブを読み取る際には、現在よく使われる形式、例えば`v7`、`STAR`、
+    `USTAR`、`PAX`、そして GNU tar の `STAR/USTAR` への拡張形式をサポートする。
+  - tar アーカイブを書き込む際には、`erl_tar` は必要な場合(例えば長いファイル名
+    やユニコード文字をファイル名に用いる場合)には `PAX` フォーマットで書き込む。
+  - 可能であれば、`erl_tar` は今後も tar アーカイブを `USTAR` 形式で書き込む。
+    これは最大限のポータビリティーのためである。
 
+```
                erl_tar in previous versions of OTP only supports the
                USTAR format. That limited path names to at most 255
                bytes, and did not support Unicode characters in names
@@ -414,10 +456,18 @@ Predecessor:             OTP
                Unicode characters). If possible, erl_tar will still
                write tar archives in the USTAR for maximum
                portability.
+```
+
+# OTP-14291    Application(s): ssl
+
+- `connection_information/[1,2]` を拡張。
+  - `session_id` と `master_secret`、 `client_random`、`server_random` は
+    `connection_information/2` からアクセスできない。
+  - 注意: `session_id` は `connection_information/1` にのみ追加されている。
+  - この根拠は、接続のセキュリティに関する値は明示的に要求されるべきだからである。
 
 
-  OTP-14291    Application(s): ssl
-
+```
                Extend connection_information/[1,2] . The values
                session_id, master_secret, client_random and
                server_random can no be accessed by
@@ -425,20 +475,37 @@ Predecessor:             OTP
                added to connection_information/1. The rational is that
                values concerning the connection security should have
                to be explicitly requested.
+```
 
+# OTP-14319    Application(s): stdlib
 
-  OTP-14319    Application(s): stdlib
-               Related Id(s): PR-1076
+- Related Id(s): PR-1076
+- 新しい関数 `ets:select_replace/2` を追加
+  - これはアトミックな "compare-and-swap" 操作を ETS オブジェクトに対して
+- [訳注] アトミック性
+  - オブジェクト個々にはアトミックだが、イテレーション全体にはその保証はない
+  - cf. http://erlang.org/doc/man/ets.html#select_replace-2
 
+```
                Add new function ets:select_replace/2 which performs
                atomic "compare-and-swap" operations for ETS objects
                using match specifications.
+```
+# OTP-14331    Application(s): erts, stdlib
+- Related Id(s): ERL-208
+- **POTENTIAL INCOMPATIBILITY**
+- OTP 内部の PCRE ライブラリバージョンを 8.33 から 8.44 にアップグレード。
+  - このライブラリは正規表現モジュールの実装に使われている。
+- 様々なバグ修正とともに、新バージョンはより良いスタック保護を可能にする。
+  - この機能を利用するため、すべてのプラットフォームにおいて、標準のスケジューラ
+    スレッドのスタックサイズがデフォルトで 128 kilo words に設定される。
+  - このスタックサイズはシステム開始時に `+sss` コマンドライン引数を `erl`
+    コマンドに渡すことで設定できる。
+- PCRE の 8.33 から 8.40 の間の変更に関しては
+  http://pcre.org/original/changelog.txt を参照のこと。
 
-
-  OTP-14331    Application(s): erts, stdlib
-               Related Id(s): ERL-208
-
-               *** POTENTIAL INCOMPATIBILITY ***
+```
+             *** POTENTIAL INCOMPATIBILITY ***
 
                Upgraded the OTP internal PCRE library from version
                8.33 to version 8.40. This library is used for
@@ -455,28 +522,50 @@ Predecessor:             OTP
                See http://pcre.org/original/changelog.txt for
                information about changes made to PCRE between the
                versions 8.33 and 8.40.
+```
 
+# OTP-14356    Application(s): erts
 
-  OTP-14356    Application(s): erts
+- 様々な VM 内部のタイマー管理の改善。
+  - これらの改善は timer wheel のメモリ消費を削減し、またタイマー処理に
+    必要な作業量を減少させる。
 
+```
                Various improvements of timer management internally in
                the VM. These improvements both reduced memory
                consumption of timer wheels as well as reduce the
                amount of work that has to be performed in order to
                handle timers.
+```
 
+# OTP-14388    Application(s): ssl
 
-  OTP-14388    Application(s): ssl
+- DTLS の基本的なサポート。
+  - OpenSSL と共にテストされている。
+- `{protocol, dtls}` のオプションを `ssl` API 関数に渡すことで
+  接続と listen をテスト。
 
+```
                Basic support for DTLS that been tested together with
                OpenSSL.
 
                Test by providing the option {protocol, dtls} to the
                ssl API functions connect and listen.
+```
 
+# OTP-14407    Application(s): erts, otp
 
-  OTP-14407    Application(s): erts, otp
+- `./configure --enable-lock-counter` はロックカウントをサポートする
+  特別なエミュレーターのビルドを有効にする。
+  - (このオプションは以前にも存在したが、デフォルトエミュレータの
+    ビルドをロックカウント付きにするスイッチだった)
+  - ロックカウントエミュレーターを開始するには `erl -emu_type lcnt` を
+    用いる。
+- Windows 上の `erl` は、コンパイルされたエミュレーターを開始するために、
+  隠しオプション `-debug` があった。
+  - そのオプションは削除され、 `erl -emu_type debug` を代わりに使用すること。
 
+```
                './configure --enable-lock-counter' will enabling
                building of an additional emulator that has support for
                lock counting. (The option previously existed, but
@@ -488,7 +577,14 @@ Predecessor:             OTP
                -debug for starting a debug-compiled emulator. That
                option has been removed. Use 'erl -emu_type debug'
                instead.
+```
 
+
+
+
+*TODO: after here not processed*
+
+```
 
  ---------------------------------------------------------------------
  --- POTENTIAL INCOMPATIBILITIES -------------------------------------
