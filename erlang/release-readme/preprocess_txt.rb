@@ -101,7 +101,7 @@ def lines_next(lines)
 end
 
 def main(lines)
-  h1("Erlang/OTP XX.X Release README")
+  h1("Erlang/OTP 2X.Y Release README (Japanese, unofficial)")
   read_body1(lines)
 
   while line = lines_next(lines) do
