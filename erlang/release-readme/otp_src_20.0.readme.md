@@ -589,8 +589,6 @@ HIGHLIGHTS
                instead.
 ```
 
-# *TODO: after here not processed*
-
 POTENTIAL INCOMPATIBILITIES
 ===========================
 
@@ -599,6 +597,13 @@ POTENTIAL INCOMPATIBILITIES
 
 - Related Id(s): OTP-10309
 - **HIGHLIGHT**
+- 文字列のユニコードサポート。
+  - unicode モジュールに正規化関数を追加。
+  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
+    して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
+    UTF-8 バイナリを入力として受け取る。
+- 古い string API は obsolete とマークされた。
+- 返り値が幾つかのエラーケースで変更された。
 
 ```
                Related Id(s): OTP-10309
@@ -618,6 +623,10 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-12872    Application(s): ssh
 
+- 内部の SSH オプション処理の書き直し。
+- 以前はクライアントオプションがデーモンに渡される、またはその逆のチェックが
+  なかった。これが修せされた。もしあなたのコードがデーモン起動にクライアントのみ
+  のオプションがあるような場合、その呼び出しは失敗する。
 
 ```
                The internal handling of SSH options is re-written.
@@ -631,6 +640,12 @@ POTENTIAL INCOMPATIBILITIES
 ### OTP-13006    Application(s): kernel
 
 - Related Id(s): ERIERL-20, ERL-429
+- 関数 `inet:ntoa/1` は、この関数が実装されたあとに承認された RFC 5935 に従い、
+  小文字の文字列を返すよう修正された。
+  - 以前は大文字で返していたため、返り値のアドレス文字列の使われ方によっては
+    後方非互換となりうる。
+- 関数 `inet:parse_address/1` は、スコープされたアドレスの `%`-サフィックスを受
+  け入れるよう修正された。このアドレスはまだ動作しないが、パースエラーは起こさない。
 
 ```
                Related Id(s): ERIERL-20, ERL-429
@@ -647,9 +662,16 @@ POTENTIAL INCOMPATIBILITIES
                work yet, but gives no parse errors.
 ```
 
+
 ### OTP-13820    Application(s): ssl
 
 - **HIGHLIGHT**
+- TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
+  信するようになった。以前のバージョンでは最も低いサポートバージョ
+  ンで送っていた。これは最新の RFC で支持される変更である。
+- これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
+  は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
+  間で問題になるかもしれない。
 
 ```
                *** HIGHLIGHT ***
@@ -665,8 +687,10 @@ POTENTIAL INCOMPATIBILITIES
                RFC and ignore unknown extensions.
 ```
 
+
 ### OTP-13827    Application(s): erts
 
+- 廃止予定だった `erlang:hash/2` を削除した。
 
 ```
                Remove deprecated erlang:hash/2.
@@ -675,6 +699,16 @@ POTENTIAL INCOMPATIBILITIES
 ### OTP-13844    Application(s): erts
 
 - Related Id(s): OTP-13833
+- 以前のパージ戦略が削除された。
+  ERTS 8.1 で導入されたオプションのパージ戦略が唯一の有効な戦略となった。
+- 新しいパージ戦略は古いっものと少々互換性がない。
+  - 以前は、パージされるモジュールを参照する fun を保持するプロセスが
+    ソフトパージを失敗させるか、またはハードパージ中に kill されていた。
+  - 新しい戦略では fun を完全に無視する。もし fun がパージされたコードを
+    参照していて、パージ後に使われた場合、使われた際に例外が上がる。
+    つまり、この振る舞いはパージ後にプロセスが fun を receive した場合と
+    厳密に同じである。
+- さらなる情報は `erlang:check_process_code/3` のドキュメントを参照。
 
 ```
                Related Id(s): OTP-13833
@@ -699,6 +733,7 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-13873    Application(s): crypto
 
+- OTP-R16B01 で初めてリリースされた crypto-3.0 の廃止予定の関数が削除された。
 
 ```
                Removed functions deprecated in crypto-3.0 first
@@ -707,6 +742,16 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-13908    Application(s): erts
 
+- NIF ライブラリのリロード機能はもはやサポートされない。
+  - OTP R15B から廃止予定であった。
+  - これは各モジュールインスタンスに対して、 `erlang:load_nif/2` の
+    成功する呼び出しは、1回までしか認められないことを意味する。
+  - 2回目の `erlang:load_nif/2` 呼び出しは、NIF ライブラリがリロード
+    コールバックを実装していたとしても `{error, {relaod, _}}` を返す。
+- NIF ライブラリのランタイムアップグレードは、Erlang モジュールアップグレードの
+  仕組みを利用することで可能である。
+  - 現在、および古いモジュールインスタンスは、それぞれに対応する NIF ライブラリ
+    と共に存在する。
 
 ```
                The NIF library reload feature is not supported
@@ -725,6 +770,9 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14039    Application(s): mnesia
 
+- 拡張プラグイン処理における、select continuation のラッピングが削除された。
+  もし使っている場合、ユーザーバックエンドプラグインの書き換えが必要になる
+  かもしれない。
 
 ```
                Removed the wrapping of select continuations in
@@ -735,6 +783,23 @@ POTENTIAL INCOMPATIBILITIES
 ### OTP-14094    Application(s): stdlib
 
 - **HIGHLIGHT**
+- ETS の操作を、テーブル識別子の型を integer から reference に
+  変更することで最適化した。
+  - reference はより少ない潜在的なロックコンテンションで、より直接の
+    テーブルへのマッピングを可能にする。
+  - 特にテーブルの生成と削除がよりスケールする。
+- 不透明型である ETS テーブル識別子の変更は、その不透明型に誤った
+  仮定を置いているコードでうまく動かないかもしれない。
+- 単一の Eralng ノードで保存できるテーブル数は、 **以前は** 限定されていたが、
+  もはや当てはまらない(メモリー使用を除いて)。
+  - 以前のデフォルト制限は 1400 テーブルで、 `ERL_MAX_ETS_TABLES` 環境
+    変数によって増加可能であった。このハードリミットは除外されたが、
+    `ERL_MAX_ETS_TABLES` を設定するのは現在も有用である。
+  - `ERL_MAX_ETS_TABLES` は、使用されるテーブルのおおよその最大数に設定される
+    べきである。これは、この値を使って内部的に名前付きテーブルがつくられるから
+    である。もし、多くの名前付きテーブルが作成され、 `ERL_MAX_ETS_TABLES` が
+    増やされていない場合、名前付きテーブルのルックアップ性能が落ちる。
+
 
 ```
                *** HIGHLIGHT ***
@@ -767,6 +832,26 @@ POTENTIAL INCOMPATIBILITIES
 ### OTP-14110    Application(s): ssh
 
 - **HIGHLIGHT**
+- キー交換アルゴリズムの最新化。 `draft-ietf-curdle-ssh-kex-sha2` の議論を
+  参照。
+- 旧式の脆弱なアルゴリズムを削除し、より強固な後任を追加。
+  - 最新の ssh クライアント、サーバとの相互運用性を保つため。
+  - アルゴリズムのデフォルト順序も調整されている。
+- 撤去: 近年では安全ではない `diffie-hellman-group1-sha1` キー交換がデフォルトで
+  は有効にならなくなった。これはオプション `preferred-algorithms` で有効化出来る。
+- 追加: 以下の、新しくより強固なキー交換アルゴリズムが追加され、デフォルトで
+  有効化された。
+  - `diffie-hellman-group16-sha512`
+  - `diffie-hellman-group18-sha512`
+  - `diffie-hellman-group14-sha256`
+- 疑問の余地が残る [RFC 6197] SHA1 ベースのアルゴリズム
+  `diffie-hellman-group-exchange-sha1` と
+  `diffie-hellman-group14-sha1` は、依然としてデフォルト有効のままである。
+  - 最新のキー交換アルゴリズムを備えていない、昔からのクライアント、サーバーとの
+    互換性を保つためである。
+  - `draft-ietf-curdle-ssh-kex-sha2` が RFC になった場合、これらの SHA1 ベースの
+    アルゴリズムは IETF により廃止予定となる。それらは Erlang/OTP のデフォルト
+    から外れるかもしれない。
 
 ```
                *** HIGHLIGHT ***
@@ -804,6 +889,9 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14146    Application(s): asn1
 
+- 廃止予定の `asn1rt` モジュールが削除された。
+  廃止予定の `asn1ct:encode/3`、 `asn1ct:decode/3` が削除された。
+  隠し関数の `asn1ct:encode/2` が削除された。
 
 ```
                The deprecated module asn1rt has been removed. The
@@ -815,6 +903,20 @@ POTENTIAL INCOMPATIBILITIES
 ### OTP-14152    Application(s): erts
 
 - **HIGHLIGHT**
+- ダーティースケジューラー有効になり、SMP の Erlang ランタイムシステムでサポート
+  される
+- ダーティー NIF サポートに加えて、ダーティー BIF とダーティーガベージコレクション
+  も導入された。
+  - 完了までに長時間かかる可能性のあるすべてのガベージコレクションは、
+    有効であればダーティースケジューラー上で実行される。
+- スケジューラーとランキュー状態を調査する `erlang:statistics/1` は、
+  ダーティースケジューラー対応で変更された。
+  - この関数を使っているコードは、非互換性を考慮した書き換えを必要とする
+    かもしれない。
+  - 影響を受ける呼び出し例
+    - `erlang:statistics(scheduler_wall_time)`
+    - `statistics(total_run_queue_lengths)`
+    - `statistics(total_active_tasks)` など
 
 ```
                *** HIGHLIGHT ***
@@ -840,6 +942,10 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14171    Application(s): crypto
 
+- 要求する OpenSSL の最低バージョンが OpenSSL-0.9.8.c に上がった。
+  - しかし、Open SSL プロジェクトにより公式にメンテナンスされている、
+    より高いバージョンを推奨する。古いバージョンを使うことは制限された
+    crypto あるゴリスムしかサポートされないことに注意。
 
 ```
                Raised minimum requirement for OpenSSL version to
@@ -852,6 +958,8 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14263    Application(s): ssh
 
+- 18.2 で廃止予定となった `public_key_alg` オプションを削除した。
+  代わりに `pref_public_key_algs` を用いること。
 
 ```
                Removed the option public_key_alg which was deprecated
@@ -860,6 +968,13 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14264    Application(s): ssh
 
+- SSH アプリケーションはデーモン開始に関してリファクタされた。
+  - 矛盾する `Host` 引数と `ip` オプションの解決方法を記述されていなかった。
+  - また `any` 値が `Host` 引数と `ip` オプションに使われた際の普通ではない
+    コーナーケースが存在した。
+  - これは(願わくば)解決されたが、`Host` と `ip` オプションを両方利用する
+    コードに不整合を発生させるかもしれない。
+  - `loopback` 値がこれらのアドレスの名前付けの正しい方法として追加された。
 
 ```
                The SSH application is refactored regarding daemon
@@ -875,6 +990,10 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14272    Application(s): erts, otp
 
+- non-smp エミュレーターは廃止予定となり、OTP-21 での削除がスケジュールされた。
+- この準備として、thread 利用の non-smp エミュレーターはもはやデフォルトでは
+  ビルドされず、configure 時に `--enable-plain-emulator` を利用して有効化され
+  なければならない。
 
 ```
                The non-smp emulators have been deprecated and are
@@ -889,6 +1008,17 @@ POTENTIAL INCOMPATIBILITIES
 
 - Related Id(s): ERL-208
 - **HIGHLIGHT**
+- Related Id(s): ERL-208
+- **POTENTIAL INCOMPATIBILITY**
+- OTP 内部の PCRE ライブラリバージョンを 8.33 から 8.44 にアップグレード。
+  - このライブラリは正規表現モジュールの実装に使われている。
+- 様々なバグ修正とともに、新バージョンはより良いスタック保護を可能にする。
+  - この機能を利用するため、すべてのプラットフォームにおいて、標準のスケジューラ
+    スレッドのスタックサイズがデフォルトで 128 kilo words に設定される。
+  - このスタックサイズはシステム開始時に `+sss` コマンドライン引数を `erl`
+    コマンドに渡すことで設定できる。
+- PCRE の 8.33 から 8.40 の間の変更に関しては
+  http://pcre.org/original/changelog.txt を参照のこと。
 
 ```
                Related Id(s): ERL-208
@@ -914,6 +1044,11 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14343    Application(s): diameter
 
+- メッセージエンコード、デコードと関係する処理の改善。
+- `@custom_types` や `@codecs` を利用する辞書は、encode/decode を通して渡される
+  追加の引数を受け付ける関数に適応する必要がある。
+  - これは、様々なプロセスディクショナリ依存のワークアラウンドが過去に使われてい
+    が、それらを取り除くために必要とされたものである。
 
 ```
                Improve performance of message encode/decode and
@@ -929,6 +1064,11 @@ POTENTIAL INCOMPATIBILITIES
 
 ### OTP-14531    Application(s): stdlib
 
+- 状態機械のエンジン `gen_statem` が総称的なタイムアウト(複数の名前付き)と、
+  絶対タイムアウト時間を処理できるようになった。ドキュメントを参照のこと。
+- `gen_statem` のコールバック `Module:init/1` は、他の `gen_*` モジュールと
+  調和するよう、必須となった。これは `gen_statem:enter_loop/4-6` を利用していた
+  `gen_statem` コールバックモジュールには非互換となる可能性がある。
 
 ```
                The state machine engine gen_statem can now handle
@@ -940,6 +1080,8 @@ POTENTIAL INCOMPATIBILITIES
                may be an incompatibility for gen_statem callback
                modules that use gen_statem:enter_loop/4-6.
 ```
+
+# TODO: 以下未訳
 
 asn1-5.0
 ========
