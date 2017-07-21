@@ -110,6 +110,7 @@ Predecessor:             OTP
 
 
 ## OTP-13820    Application(s): ssl
+
 - **POTENTIAL INCOMPATIBILITY**
 - TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
   信するようになった。以前のバージョンでは最も低いサポートバージョ
@@ -132,97 +133,100 @@ Predecessor:             OTP
              RFC and ignore unknown extensions.
 ```
 
-- OTP-13900    Application(s): crypto
-  - crypto アプリケーションが OpenSSL 1.1 をサポート
+## OTP-13900    Application(s): crypto
 
-  ```
-               The crypto application now supports OpenSSL 1.1.
-  ```
+- crypto アプリケーションが OpenSSL 1.1 をサポート
 
+```
+             The crypto application now supports OpenSSL 1.1.
+```
 
-- OTP-13921    Application(s): crypto, ssl
-  - Related Id(s): PR-1180
-  - Erlang/OTP が OpenSSL を FIPS-140 モードで利用できるようになった。
-    - 特定のセキュリティ要請(主に US 連邦政府の幾つかの部門)を満たすため
-  - _[SS]_ cf. FIPS mode Erlang -- FIPS mode
-    http://erlang.org/doc/apps/crypto/fips.html
+## OTP-13921    Application(s): crypto, ssl
 
-  ```
-               Allow Erlang/OTP to use OpenSSL in FIPS-140 mode, in
-               order to satisfy specific security requirements (mostly
-               by different parts of the US federal government).
+- Related Id(s): PR-1180
+- Erlang/OTP が OpenSSL を FIPS-140 モードで利用できるようになった。
+  - 特定のセキュリティ要請(主に US 連邦政府の幾つかの部門)を満たすため
+- cf. FIPS mode Erlang -- FIPS mode
+  http://erlang.org/doc/apps/crypto/fips.html
 
-               See the new crypto users guide "FIPS mode" chapter
-               about building and using the FIPS support which is
-               disabled by default.
+```
+             Allow Erlang/OTP to use OpenSSL in FIPS-140 mode, in
+             order to satisfy specific security requirements (mostly
+             by different parts of the US federal government).
 
-               (Thanks to dszoboszlay and legoscia)
-  ```
+             See the new crypto users guide "FIPS mode" chapter
+             about building and using the FIPS support which is
+             disabled by default.
 
-- OTP-14059    Application(s): kernel, stdlib
-  - 変更されたコードを検知する関数が追加された
-  - code:modified_modules/0 はロードされているモジュールの中で
-    ディスク上変更されているものを、すべて返す
-  - code:module_status/1 はモジュールの状態を返す
-  - シェルと c モジュールでは mm/0 が code:modified_modules/0 の
-    短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
+             (Thanks to dszoboszlay and legoscia)
+```
 
-  ```
-               Functions for detecting changed code has been added.
-               code:modified_modules/0 returns all currently loaded
-               modules that have changed on disk. code:module_status/1
-               returns the status for a module. In the shell and in c
-               module, mm/0 is short for code:modified_modules/0, and
-               lm/0 reloads all currently loaded modules that have
-               changed on disk.
-  ```
+## OTP-14059    Application(s): kernel, stdlib
 
-- OTP-14094    Application(s): stdlib
-  - **POTENTIAL INTEROPERABILITY**
-  - ETS の操作を、テーブル識別子の型を integer から reference に
-    変更することで最適化した。
-    - reference はより少ない潜在的なロックコンテンションで、より直接の
-      テーブルへのマッピングを可能にする。
-    - 特にテーブルの生成と削除がよりスケールする。
-  - 不透明型である ETS テーブル識別子の変更は、その不透明型に誤った
-    仮定を置いているコードでうまく動かないかもしれない。
-  - 単一の Eralng ノードで保存できるテーブル数は、 **以前は** 限定されていたが、
-    もはや当てはまらない(メモリー使用を除いて)。
-    - 以前のデフォルト制限は 1400 テーブルで、 `ERL_MAX_ETS_TABLES` 環境
-      変数によって増加可能であった。このハードリミットは除外されたが、
-      `ERL_MAX_ETS_TABLES` を設定するのは現在も有用である。
-    - `ERL_MAX_ETS_TABLES` は、使用されるテーブルのおおよその最大数に設定される
-      べきである。これは、この値を使って内部的に名前付きテーブルがつくられるから
-      である。もし、多くの名前付きテーブルが作成され、 `ERL_MAX_ETS_TABLES` が
-      増やされていない場合、名前付きテーブルのルックアップ性能が落ちる。
+- 変更されたコードを検知する関数が追加された
+- code:modified_modules/0 はロードされているモジュールの中で
+  ディスク上変更されているものを、すべて返す
+- code:module_status/1 はモジュールの状態を返す
+- シェルと c モジュールでは mm/0 が code:modified_modules/0 の
+  短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
 
-  ```
-               *** POTENTIAL INCOMPATIBILITY ***
+```
+             Functions for detecting changed code has been added.
+             code:modified_modules/0 returns all currently loaded
+             modules that have changed on disk. code:module_status/1
+             returns the status for a module. In the shell and in c
+             module, mm/0 is short for code:modified_modules/0, and
+             lm/0 reloads all currently loaded modules that have
+             changed on disk.
+```
 
-               Optimized ETS operations by changing table identifier
-               type from integer to reference. The reference enables a
-               more direct mapping to the table with less potential
-               lock contention and makes especially creation and
-               deletion of tables scale much better.
+## OTP-14094    Application(s): stdlib
 
-               The change of the opaque type for the ETS table
-               identifiers may cause failure in code that make faulty
-               assumptions about this opaque type.
+- **POTENTIAL INTEROPERABILITY**
+- ETS の操作を、テーブル識別子の型を integer から reference に
+  変更することで最適化した。
+  - reference はより少ない潜在的なロックコンテンションで、より直接の
+    テーブルへのマッピングを可能にする。
+  - 特にテーブルの生成と削除がよりスケールする。
+- 不透明型である ETS テーブル識別子の変更は、その不透明型に誤った
+  仮定を置いているコードでうまく動かないかもしれない。
+- 単一の Eralng ノードで保存できるテーブル数は、 **以前は** 限定されていたが、
+  もはや当てはまらない(メモリー使用を除いて)。
+  - 以前のデフォルト制限は 1400 テーブルで、 `ERL_MAX_ETS_TABLES` 環境
+    変数によって増加可能であった。このハードリミットは除外されたが、
+    `ERL_MAX_ETS_TABLES` を設定するのは現在も有用である。
+  - `ERL_MAX_ETS_TABLES` は、使用されるテーブルのおおよその最大数に設定される
+    べきである。これは、この値を使って内部的に名前付きテーブルがつくられるから
+    である。もし、多くの名前付きテーブルが作成され、 `ERL_MAX_ETS_TABLES` が
+    増やされていない場合、名前付きテーブルのルックアップ性能が落ちる。
 
-               The number of tables stored at one Erlang node *used*
-               to be limited. This is no longer the case (except by
-               memory usage). The previous default limit was about
-               1400 tables and could be increased by setting the
-               environment variable ERL_MAX_ETS_TABLES before starting
-               the Erlang runtime system. This hard limit has been
-               removed, but it is currently useful to set the
-               ERL_MAX_ETS_TABLES anyway. It should be set to an
-               approximate of the maximum amount of tables used. This
-               since an internal table for named tables is sized using
-               this value. If large amounts of named tables are used
-               and ERL_MAX_ETS_TABLES hasn't been increased, the
-               performance of named table lookup will degrade.
-  ```
+```
+             *** POTENTIAL INCOMPATIBILITY ***
+
+             Optimized ETS operations by changing table identifier
+             type from integer to reference. The reference enables a
+             more direct mapping to the table with less potential
+             lock contention and makes especially creation and
+             deletion of tables scale much better.
+
+             The change of the opaque type for the ETS table
+             identifiers may cause failure in code that make faulty
+             assumptions about this opaque type.
+
+             The number of tables stored at one Erlang node *used*
+             to be limited. This is no longer the case (except by
+             memory usage). The previous default limit was about
+             1400 tables and could be increased by setting the
+             environment variable ERL_MAX_ETS_TABLES before starting
+             the Erlang runtime system. This hard limit has been
+             removed, but it is currently useful to set the
+             ERL_MAX_ETS_TABLES anyway. It should be set to an
+             approximate of the maximum amount of tables used. This
+             since an internal table for named tables is sized using
+             this value. If large amounts of named tables are used
+             and ERL_MAX_ETS_TABLES hasn't been increased, the
+             performance of named table lookup will degrade.
+```
 
 
 
