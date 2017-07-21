@@ -81,55 +81,56 @@ Predecessor:             OTP
 
 # HIGHLIGHTS
 
--  OTP-10289    Application(s): stdlib
-  - **POTENTIAL INCOMPATIBILITY**
-  - 文字列のユニコードサポート。
-    - unicode モジュールに正規化関数を追加。
-    - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
-      して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
-      UTF-8 バイナリを入力として受け取る。
-  - 古い string API は obsolete とマークされた。
-  - 返り値が幾つかのエラーケースで変更された。
+## OTP-10289    Application(s): stdlib
 
-  ```
-               Related Id(s): OTP-10309
+- **POTENTIAL INCOMPATIBILITY**
+- 文字列のユニコードサポート。
+  - unicode モジュールに正規化関数を追加。
+  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
+    して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
+    UTF-8 バイナリを入力として受け取る。
+- 古い string API は obsolete とマークされた。
+- 返り値が幾つかのエラーケースで変更された。
 
-               *** POTENTIAL INCOMPATIBILITY ***
+```
+             Related Id(s): OTP-10309
 
-               Improved unicode support for strings. Added
-               normalization functions in the unicode module. Extended
-               the string module API with new functions with improved
-               unicode handling and that works on grapheme clusters.
-               The new functions operates on the unicode:chardata()
-               type, thus they also accept UTF-8 binaries as input.
+             *** POTENTIAL INCOMPATIBILITY ***
 
-               The old string API have been marked as obsolete. The
-               return values have been changed for some error cases.
-  ```
+             Improved unicode support for strings. Added
+             normalization functions in the unicode module. Extended
+             the string module API with new functions with improved
+             unicode handling and that works on grapheme clusters.
+             The new functions operates on the unicode:chardata()
+             type, thus they also accept UTF-8 binaries as input.
+
+             The old string API have been marked as obsolete. The
+             return values have been changed for some error cases.
+```
 
 
--  OTP-13820    Application(s): ssl
-  - **POTENTIAL INCOMPATIBILITY**
-  - TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
-    信するようになった。以前のバージョンでは最も低いサポートバージョ
-    ンで送っていた。これは最新の RFC で支持される変更である。
-  - これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
-    は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
-    間で問題になるかもしれない。
+## OTP-13820    Application(s): ssl
+- **POTENTIAL INCOMPATIBILITY**
+- TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
+  信するようになった。以前のバージョンでは最も低いサポートバージョ
+  ンで送っていた。これは最新の RFC で支持される変更である。
+- これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
+  は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
+  間で問題になるかもしれない。
 
-  ```
-               *** POTENTIAL INCOMPATIBILITY ***
+```
+             *** POTENTIAL INCOMPATIBILITY ***
 
-               TLS-1.2 clients will now always send hello messages on
-               its own format, as opposed to earlier versions that
-               will send the hello on the lowest supported version,
-               this is a change supported by the latest RFC.
+             TLS-1.2 clients will now always send hello messages on
+             its own format, as opposed to earlier versions that
+             will send the hello on the lowest supported version,
+             this is a change supported by the latest RFC.
 
-               This will make interoperability with some newer servers
-               smoother. Potentially, but unlikely, this could cause a
-               problem with older servers if they do not adhere to the
-               RFC and ignore unknown extensions.
-  ```
+             This will make interoperability with some newer servers
+             smoother. Potentially, but unlikely, this could cause a
+             problem with older servers if they do not adhere to the
+             RFC and ignore unknown extensions.
+```
 
 - OTP-13900    Application(s): crypto
   - crypto アプリケーションが OpenSSL 1.1 をサポート
