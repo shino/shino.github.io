@@ -228,16 +228,31 @@ Predecessor:             OTP
              performance of named table lookup will degrade.
 ```
 
+## OTP-14110    Application(s): ssh
 
-
-
-
-*TODO: after here not processed*
+- **POTENTIAL INCOMPATIBILITY**
+- キー交換アルゴリズムの最新化。 `draft-ietf-curdle-ssh-kex-sha2` の議論を
+  参照。
+- 旧式の脆弱なアルゴリズムを削除し、より強固な後任を追加。
+  - 最新の ssh クライアント、サーバとの相互運用性を保つため。
+  - アルゴリズムのデフォルト順序も調整されている。
+- 撤去: 近年では安全ではない `diffie-hellman-group1-sha1` キー交換がデフォルトで
+  は有効にならなくなった。これはオプション `preferred-algorithms` で有効化出来る。
+- 追加: 以下の、新しくより強固なキー交換アルゴリズムが追加され、デフォルトで
+  有効化された。
+  - `diffie-hellman-group16-sha512`
+  - `diffie-hellman-group18-sha512`
+  - `diffie-hellman-group14-sha256`
+- 疑問の余地が残る [RFC 6197] SHA1 ベースのアルゴリズム
+  `diffie-hellman-group-exchange-sha1` と
+  `diffie-hellman-group14-sha1` は、依然としてデフォルト有効のままである。
+  - 最新のキー交換アルゴリズムを備えていない、昔からのクライアント、サーバーとの
+    互換性を保つためである。
+  - `draft-ietf-curdle-ssh-kex-sha2` が RFC になった場合、これらの SHA1 ベースの
+    アルゴリズムは IETF により廃止予定となる。それらは Erlang/OTP のデフォルト
+    から外れるかもしれない。
 
 ```
-
-  OTP-14110    Application(s): ssh
-
                *** POTENTIAL INCOMPATIBILITY ***
 
                Modernization of key exchange algorithms. See
@@ -269,6 +284,13 @@ Predecessor:             OTP
                diffie-hellman-group1-sha1 will be deprecated by IETF.
                They might then be removed from the default list in
                Erlang/OTP.
+
+```
+
+
+*TODO: after here not processed*
+
+```
 
 
   OTP-14152    Application(s): erts
