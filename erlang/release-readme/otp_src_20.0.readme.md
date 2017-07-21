@@ -1,10 +1,6 @@
----
-layout: default
-title: Erlang/OTP 20.0 Release README
----
 
-Erlang/OTP 20.0 Release README
-==============================
+Erlang/OTP 20.0 Release README (Japanese, unofficial)
+=====================================================
 
 ```
 Patch Package:           OTP 20.0
