@@ -91,7 +91,7 @@ Predecessor:             OTP
   - 古い string API は obsolete とマークされた。
   - 返り値が幾つかのエラーケースで変更された。
 
-```
+  ```
                Related Id(s): OTP-10309
 
                *** POTENTIAL INCOMPATIBILITY ***
@@ -105,7 +105,8 @@ Predecessor:             OTP
 
                The old string API have been marked as obsolete. The
                return values have been changed for some error cases.
-```
+  ```
+
 
 -  OTP-13820    Application(s): ssl
   - **POTENTIAL INCOMPATIBILITY**
@@ -137,11 +138,12 @@ Predecessor:             OTP
                The crypto application now supports OpenSSL 1.1.
   ```
 
+
 - OTP-13921    Application(s): crypto, ssl
   - Related Id(s): PR-1180
   - Erlang/OTP が OpenSSL を FIPS-140 モードで利用できるようになった。
     - 特定のセキュリティ要請(主に US 連邦政府の幾つかの部門)を満たすため
-  - _SS_ cf. FIPS mode Erlang -- FIPS mode
+  - _[SS]_ cf. FIPS mode Erlang -- FIPS mode
     http://erlang.org/doc/apps/crypto/fips.html
 
   ```
