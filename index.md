@@ -6,7 +6,7 @@ Random text by shino
 
 Release README's, partially translated to Japanese.
 
-- [OTP 20.0](erlang/release-readme/otp_src_20.0.readme.txt)
+- [OTP 20.0](erlang/release-readme/otp_src_20.0.readme.md)
 
 ## sandbox
 

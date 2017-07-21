@@ -1,3 +1,5 @@
+# Erlang/OTP 20.0 Release README
+
 ```
 Patch Package:           OTP 20.0
 Git Tag:                 OTP-20.0
@@ -77,14 +79,19 @@ Predecessor:             OTP
  documentation.
 ```
 
-```
- ---------------------------------------------------------------------
- --- HIGHLIGHTS ------------------------------------------------------
- ---------------------------------------------------------------------
-```
+# HIGHLIGHTS
+
+-  OTP-10289    Application(s): stdlib
+  - *POTENTIAL INCOMPATIBILITY*
+  - 文字列のユニコードサポート。
+    - unicode モジュールに正規化関数を追加。
+    - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
+      して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
+      UTF-8 バイナリを入力として受け取る。
+  - 古い string API は obsolete とマークされた。
+  - 返り値が幾つかのエラーケースで変更された。
 
 ```
-  OTP-10289    Application(s): stdlib
                Related Id(s): OTP-10309
 
                *** POTENTIAL INCOMPATIBILITY ***
@@ -100,19 +107,16 @@ Predecessor:             OTP
                return values have been changed for some error cases.
 ```
 
-- 文字列のユニコードサポート。
-- unicode モジュールに正規化関数を追加。
-- string モジュール API を拡張: 改善されたユニコード処理
-  と書要素クラスタに対して機能する関数を追加。
-  新しい関数は unicode:chardata() 型に作用するため、
-  UTF-8 バイナリを入力として受け取る。
-
-- 古い string API は obsolete とマークされた。
-- 返り値が幾つかのエラーケースで変更された。
+-  OTP-13820    Application(s): ssl
+  - *POTENTIAL INCOMPATIBILITY*
+  - TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
+    信するようになった。以前のバージョンでは最も低いサポートバージョ
+    ンで送っていた。これは最新の RFC で支持される変更である。
+  - これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
+    は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
+    間で問題になるかもしれない。
 
 ```
-  OTP-13820    Application(s): ssl
-
                *** POTENTIAL INCOMPATIBILITY ***
 
                TLS-1.2 clients will now always send hello messages on
@@ -126,14 +130,11 @@ Predecessor:             OTP
                RFC and ignore unknown extensions.
 ```
 
-- TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
-  信するようになった。以前のバージョンでは最も低いサポートバージョ
-  ンで送っていた。これは最新の RFC で支持される変更である。
 
-- これは新しいサーバとの相互運用性を円滑にする。潜在的に、可能性
-  は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
-  間で問題になるかもしれない。
 
+*TODO: after here not processed*
+
+```
 
   OTP-13900    Application(s): crypto
 
@@ -3343,3 +3344,4 @@ Predecessor:             OTP
  ---------------------------------------------------------------------
  ---------------------------------------------------------------------
 
+```
