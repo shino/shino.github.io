@@ -1,4 +1,5 @@
-# Erlang/OTP 20.0 Release README
+Erlang/OTP 20.0 Release README
+==============================
 
 ```
 Patch Package:           OTP 20.0
@@ -79,7 +80,8 @@ Predecessor:             OTP
  documentation.
 ```
 
-# HIGHLIGHTS
+HIGHLIGHTS
+==========
 
 ## OTP-10289    Application(s): stdlib
 
@@ -327,7 +329,7 @@ Predecessor:             OTP
                statistics(total_active_tasks), etc.
 ```
 
-# OTP-14178    Application(s): compiler, erts
+## OTP-14178    Application(s): compiler, erts
 
 - アトムは任意のユニコード文字を含むことが出来る。
 
@@ -335,7 +337,7 @@ Predecessor:             OTP
                Atoms may now contain arbitrary Unicode characters.
 ```
 
-# OTP-14183    Application(s): stdlib
+## OTP-14183    Application(s): stdlib
 
 - `gen_fsm` は廃止予定となり、 `gen_statem` に置き換えられた。
   - しかし、後方互換製のため、 `gen_fsm` はかなり長期間に渡り、
@@ -348,7 +350,7 @@ Predecessor:             OTP
                some time.
 ```
 
-# OTP-14193    Application(s): ssh
+## OTP-14193    Application(s): ssh
 
 - 拡張ネゴシエーション機構と、 `draft-ietf-curdle-ssh-ext-info-05` の
   `server-sig-algs` 拡張が実装された。
@@ -365,7 +367,7 @@ Predecessor:             OTP
                rsa-sha2-256 and rsa-sha2-512.
 ```
 
-# OTP-14197    Application(s): ssl
+## OTP-14197    Application(s): ssl
 
 - TLS クライアントプロセスがデフォルトで `public_key:pkix_verify_hostname/2` を
   呼ぶようになった。
@@ -386,7 +388,7 @@ Predecessor:             OTP
                indication option, the check will not be performed.
 ```
 
-# OTP-14205    Application(s): erts
+## OTP-14205    Application(s): erts
 
 - その場しのぎのマジックバイナリはすべて erlang reference の使用に置き換えられた。
 - マジックバイナリは空のバイナリとして使われていたが、実際には Erlang VM 内部の
@@ -418,7 +420,7 @@ Predecessor:             OTP
                are match specifications and NIF resources.
 ```
 
-# OTP-14219    Application(s): asn1
+## OTP-14219    Application(s): asn1
 
 - 新しい `maps` オプションは、 `SEQUENCE` と `SET` の型の表現を(レコードではな
   く)マップに変更する。
@@ -428,7 +430,7 @@ Predecessor:             OTP
                types SEQUENCE and SET to be maps (instead of records).
 ```
 
-# OTP-14226    Application(s): stdlib
+## OTP-14226    Application(s): stdlib
 
 - 以前の OTP バージョンにあった `erl_tar` は `USTAR` フォーマットのみを
   サポートしていた。 これはパス名をたかだか 255 バイトまでに制限しており、
@@ -458,7 +460,7 @@ Predecessor:             OTP
                portability.
 ```
 
-# OTP-14291    Application(s): ssl
+## OTP-14291    Application(s): ssl
 
 - `connection_information/[1,2]` を拡張。
   - `session_id` と `master_secret`、 `client_random`、`server_random` は
@@ -477,7 +479,7 @@ Predecessor:             OTP
                to be explicitly requested.
 ```
 
-# OTP-14319    Application(s): stdlib
+## OTP-14319    Application(s): stdlib
 
 - Related Id(s): PR-1076
 - 新しい関数 `ets:select_replace/2` を追加
@@ -491,7 +493,7 @@ Predecessor:             OTP
                atomic "compare-and-swap" operations for ETS objects
                using match specifications.
 ```
-# OTP-14331    Application(s): erts, stdlib
+## OTP-14331    Application(s): erts, stdlib
 - Related Id(s): ERL-208
 - **POTENTIAL INCOMPATIBILITY**
 - OTP 内部の PCRE ライブラリバージョンを 8.33 から 8.44 にアップグレード。
@@ -524,7 +526,7 @@ Predecessor:             OTP
                versions 8.33 and 8.40.
 ```
 
-# OTP-14356    Application(s): erts
+## OTP-14356    Application(s): erts
 
 - 様々な VM 内部のタイマー管理の改善。
   - これらの改善は timer wheel のメモリ消費を削減し、またタイマー処理に
@@ -538,7 +540,7 @@ Predecessor:             OTP
                handle timers.
 ```
 
-# OTP-14388    Application(s): ssl
+## OTP-14388    Application(s): ssl
 
 - DTLS の基本的なサポート。
   - OpenSSL と共にテストされている。
@@ -553,7 +555,7 @@ Predecessor:             OTP
                ssl API functions connect and listen.
 ```
 
-# OTP-14407    Application(s): erts, otp
+## OTP-14407    Application(s): erts, otp
 
 - `./configure --enable-lock-counter` はロックカウントをサポートする
   特別なエミュレーターのビルドを有効にする。
