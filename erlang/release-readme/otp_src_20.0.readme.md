@@ -82,7 +82,7 @@ Predecessor:             OTP
 # HIGHLIGHTS
 
 -  OTP-10289    Application(s): stdlib
-  - *POTENTIAL INCOMPATIBILITY*
+  - **POTENTIAL INCOMPATIBILITY**
   - 文字列のユニコードサポート。
     - unicode モジュールに正規化関数を追加。
     - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
@@ -108,7 +108,7 @@ Predecessor:             OTP
 ```
 
 -  OTP-13820    Application(s): ssl
-  - *POTENTIAL INCOMPATIBILITY*
+  - **POTENTIAL INCOMPATIBILITY**
   - TLS-1.2 クライアントが常に hello メッセージをそれ自体の形式で送
     信するようになった。以前のバージョンでは最も低いサポートバージョ
     ンで送っていた。これは最新の RFC で支持される変更である。
@@ -116,7 +116,7 @@ Predecessor:             OTP
     は低いが、古い RFC に固執し知らない拡張を無視する古いサーバとの
     間で問題になるかもしれない。
 
-```
+  ```
                *** POTENTIAL INCOMPATIBILITY ***
 
                TLS-1.2 clients will now always send hello messages on
@@ -128,22 +128,23 @@ Predecessor:             OTP
                smoother. Potentially, but unlikely, this could cause a
                problem with older servers if they do not adhere to the
                RFC and ignore unknown extensions.
-```
+  ```
 
+- OTP-13900    Application(s): crypto
+  - crypto アプリケーションが OpenSSL 1.1 をサポート
 
-
-*TODO: after here not processed*
-
-```
-
-  OTP-13900    Application(s): crypto
-
+  ```
                The crypto application now supports OpenSSL 1.1.
+  ```
 
+- OTP-13921    Application(s): crypto, ssl
+  - Related Id(s): PR-1180
+  - Erlang/OTP が OpenSSL を FIPS-140 モードで利用できるようになった。
+    - 特定のセキュリティ要請(主に US 連邦政府の幾つかの部門)を満たすため
+  - _SS_ cf. FIPS mode Erlang -- FIPS mode
+    http://erlang.org/doc/apps/crypto/fips.html
 
-  OTP-13921    Application(s): crypto, ssl
-               Related Id(s): PR-1180
-
+  ```
                Allow Erlang/OTP to use OpenSSL in FIPS-140 mode, in
                order to satisfy specific security requirements (mostly
                by different parts of the US federal government).
@@ -153,12 +154,17 @@ Predecessor:             OTP
                disabled by default.
 
                (Thanks to dszoboszlay and legoscia)
+  ```
 
-               - [SS] 参照: FIPS mode Erlang -- FIPS mode
-                 http://erlang.org/doc/apps/crypto/fips.html
+- OTP-14059    Application(s): kernel, stdlib
+  - 変更されたコードを検知する関数が追加された
+  - code:modified_modules/0 はロードされているモジュールの中で
+    ディスク上変更されているものを、すべて返す
+  - code:module_status/1 はモジュールの状態を返す
+  - シェルと c モジュールでは mm/0 が code:modified_modules/0 の
+    短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
 
-  OTP-14059    Application(s): kernel, stdlib
-
+  ```
                Functions for detecting changed code has been added.
                code:modified_modules/0 returns all currently loaded
                modules that have changed on disk. code:module_status/1
@@ -166,17 +172,28 @@ Predecessor:             OTP
                module, mm/0 is short for code:modified_modules/0, and
                lm/0 reloads all currently loaded modules that have
                changed on disk.
+  ```
 
-               - 変更されたコードを検知する関数が追加された
-               - code:modified_modules/0 はロードされているモジュールの中で
-                 ディスク上変更されているものを、すべて返す
-               - code:module_status/1 はモジュールの状態を返す
-               - シェルと c モジュールでは mm/0 が code:modified_modules/0 の
-                 短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
+- OTP-14094    Application(s): stdlib
+  - **POTENTIAL INTEROPERABILITY**
+  - ETS の操作を、テーブル識別子の型を integer から reference に
+    変更することで最適化した。
+    - reference はより少ない潜在的なロックコンテンションで、より直接の
+      テーブルへのマッピングを可能にする。
+    - 特にテーブルの生成と削除がよりスケールする。
+  - 不透明型である ETS テーブル識別子の変更は、その不透明型に誤った
+    仮定を置いているコードでうまく動かないかもしれない。
+  - 単一の Eralng ノードで保存できるテーブル数は、 **以前は** 限定されていたが、
+    もはや当てはまらない(メモリー使用を除いて)。
+    - 以前のデフォルト制限は 1400 テーブルで、 `ERL_MAX_ETS_TABLES` 環境
+      変数によって増加可能であった。このハードリミットは除外されたが、
+      `ERL_MAX_ETS_TABLES` を設定するのは現在も有用である。
+    - `ERL_MAX_ETS_TABLES` は、使用されるテーブルのおおよその最大数に設定される
+      べきである。これは、この値を使って内部的に名前付きテーブルがつくられるから
+      である。もし、多くの名前付きテーブルが作成され、 `ERL_MAX_ETS_TABLES` が
+      増やされていない場合、名前付きテーブルのルックアップ性能が落ちる。
 
-
-  OTP-14094    Application(s): stdlib
-
+  ```
                *** POTENTIAL INCOMPATIBILITY ***
 
                Optimized ETS operations by changing table identifier
@@ -202,10 +219,15 @@ Predecessor:             OTP
                this value. If large amounts of named tables are used
                and ERL_MAX_ETS_TABLES hasn't been increased, the
                performance of named table lookup will degrade.
+  ```
 
-               - ETS の操作を、テーブル識別子の型を integer から reference に
-                 変更することで最適化した。
 
+
+
+
+*TODO: after here not processed*
+
+```
 
   OTP-14110    Application(s): ssh
 
