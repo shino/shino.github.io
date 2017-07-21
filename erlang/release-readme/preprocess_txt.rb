@@ -1,18 +1,22 @@
 #!/usr/bin/env ruby
 
-$inside_quote = false
+class Quote
+  @inside_quote = false
 
-def maybe_start_quote()
-  return if $inside_quote
-  puts "```"
-  $inside_quote = true
+  def maybe_start()
+    return if @inside_quote
+    puts "```"
+    @inside_quote = true
+  end
+
+  def maybe_close()
+    return unless @inside_quote
+    puts "```"
+    @inside_quote = false
+  end
 end
 
-def maybe_close_quote()
-  return unless $inside_quote
-  puts "```"
-  $inside_quote = false
-end
+$quote = Quote.new
 
 def read_body1(lines)
   loop do
@@ -21,13 +25,13 @@ def read_body1(lines)
       break
     else
       if line.chomp.length > 0
-        maybe_start_quote()
+        $quote.maybe_start()
         puts line
       end
       lines.next()
     end
   end
-  maybe_close_quote()
+  $quote.maybe_close()
 end
 
 def trim_buffer(buffer)
@@ -69,9 +73,9 @@ def read_item_body(lines)
     end
   end
   puts
-  maybe_start_quote()
+  $quote.maybe_start()
   puts trim_buffer(buffer)
-  maybe_close_quote()
+  $quote.maybe_close()
   exit() if will_exit
 end
 

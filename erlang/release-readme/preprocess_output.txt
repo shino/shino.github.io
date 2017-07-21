@@ -1,0 +1,212 @@
+
+Erlang/OTP XX.X Release README
+==============================
+
+```
+Patch Package:           OTP 20.0
+Git Tag:                 OTP-20.0
+Date:                    2017-06-21
+```
+
+HIGHLIGHTS
+==========
+
+
+### OTP-10289    Application(s): stdlib
+
+- Related Id(s): OTP-10309
+- **POTENTIAL INCOMPATIBILITY**
+
+```
+               Related Id(s): OTP-10309
+
+               *** POTENTIAL INCOMPATIBILITY ***
+
+               Improved unicode support for strings. Added
+               normalization functions in the unicode module. Extended
+               the string module API with new functions with improved
+               unicode handling and that works on grapheme clusters.
+               The new functions operates on the unicode:chardata()
+               type, thus they also accept UTF-8 binaries as input.
+```
+
+### OTP-13820    Application(s): ssl
+
+- **POTENTIAL INCOMPATIBILITY**
+
+```
+               *** POTENTIAL INCOMPATIBILITY ***
+
+               TLS-1.2 clients will now always send hello messages on
+               its own format, as opposed to earlier versions that
+               will send the hello on the lowest supported version,
+               this is a change supported by the latest RFC.
+
+               This will make interoperability with some newer servers
+               smoother. Potentially, but unlikely, this could cause a
+               problem with older servers if they do not adhere to the
+               RFC and ignore unknown extensions.
+```
+
+### OTP-13900    Application(s): crypto
+
+
+```
+               The crypto application now supports OpenSSL 1.1.
+```
+
+POTENTIAL INCOMPATIBILITIES
+===========================
+
+
+### OTP-10289    Application(s): stdlib
+
+- Related Id(s): OTP-10309
+- **HIGHLIGHT**
+
+```
+               Related Id(s): OTP-10309
+
+               *** HIGHLIGHT ***
+
+               Improved unicode support for strings. Added
+               normalization functions in the unicode module. Extended
+               the string module API with new functions with improved
+               unicode handling and that works on grapheme clusters.
+               The new functions operates on the unicode:chardata()
+               type, thus they also accept UTF-8 binaries as input.
+
+               The old string API have been marked as obsolete. The
+               return values have been changed for some error cases.
+```
+
+### OTP-12872    Application(s): ssh
+
+
+```
+               The internal handling of SSH options is re-written.
+
+               Previously there were no checks if a client option was
+               given to a daemon or vice versa. This is corrected now.
+               If your code has e.g. a client-only option in a call to
+               start a daemon, the call will fail.
+```
+
+asn1-5.0
+========
+
+
+## Fixed Bugs and Malfunctions
+
+
+### OTP-14316    Application(s): asn1, crypto, runtime_tools
+
+- Related Id(s): PR-1390
+
+```
+               Related Id(s): PR-1390
+
+               Add compile option -compile(no_native) in modules with
+               on_load directive which is not yet supported by HiPE.
+```
+
+## Improvements and New Features
+
+
+### OTP-13961    Application(s): asn1
+
+
+```
+               The error tuple returned from the encode and decode
+               functions will now include the stack backtrace to make
+               it easier to understand what went wrong.
+```
+
+### OTP-14146    Application(s): asn1
+
+- **POTENTIAL INCOMPATIBILITY**
+
+```
+               *** POTENTIAL INCOMPATIBILITY ***
+
+               The deprecated module asn1rt has been removed. The
+               deprecated functions asn1ct:encode/3 and
+               asn1ct:decode/3 have been removed. The undocumented
+               function asn1ct:encode/2 has been removed.
+```
+
+### OTP-14219    Application(s): asn1
+
+- **HIGHLIGHT**
+
+```
+               *** HIGHLIGHT ***
+
+               The new 'maps' option changes the representation of the
+               types SEQUENCE and SET to be maps (instead of records).
+```
+
+common_test-1.15
+================
+
+
+## Fixed Bugs and Malfunctions
+
+
+### OTP-14332    Application(s): common_test
+
+- Related Id(s): seq13299
+
+```
+               Related Id(s): seq13299
+
+               Errors in the documentation for user HTML stylesheets
+               have been corrected.
+```
+
+### OTP-14400    Application(s): common_test, snmp, stdlib
+
+
+```
+               Internal code change: Calls to catch followed by a call
+               to erlang:get_stacktrace/0 has been rewritten to use
+               try instead of catch to make the code future-proof.
+```
+
+## Improvements and New Features
+
+
+### OTP-13806    Application(s): common_test
+
+
+```
+               The ct_slave modules now handle nodenames in the same
+               way as nodenames passed to -sname. That means
+               ct_slave:start('b@127.0.0.1'). will now work.
+```
+
+### OTP-14179    Application(s): common_test
+
+
+```
+               Added the new option, keep_logs. If setting the value
+               for this option to an integer, N, common_test will
+               remove all ct_run.* directories in the current log
+               directory, except the N newest.
+```
+
+### OTP-14284    Application(s): common_test
+
+
+```
+               The existing ct_netconfc:open/1,2 opens an SSH
+               connection with one SSH channel realizing one Netconf
+               session. To allow testing of multiple sessions over the
+               same SSH connection, the following functions are added
+               to ct_netconfc:
+
+               * connect/1,2 - establish an SSH connection *
+               disconnect/1 - close the given SSH connection *
+               session/1,2,3 - open an ssh channel on the given
+               connection and send 'hello' to start a Netconf session
+```
