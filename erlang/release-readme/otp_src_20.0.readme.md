@@ -90,11 +90,13 @@ HIGHLIGHTS
 - **POTENTIAL INCOMPATIBILITY**
 - 文字列のユニコードサポート。
   - unicode モジュールに正規化関数を追加。
-  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
+  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスターに対
     して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
     UTF-8 バイナリを入力として受け取る。
 - 古い string API は obsolete とマークされた。
 - 返り値が幾つかのエラーケースで変更された。
+- [訳注] grapheme cluster (書要素クラスター)はユニコード仕様の用語。
+  - UAX #29: Unicode Text Segmentation http://unicode.org/reports/tr29/
 
 ```
                Related Id(s): OTP-10309
@@ -1082,8 +1084,6 @@ POTENTIAL INCOMPATIBILITIES
                modules that use gen_statem:enter_loop/4-6.
 ```
 
-# TODO: 以下未訳
-
 asn1-5.0
 ========
 
@@ -1094,6 +1094,8 @@ asn1-5.0
 ### OTP-14316    Application(s): asn1, crypto, runtime_tools
 
 - Related Id(s): PR-1390
+- HiPE でサポートされていない `on_load` を持つモジュールに
+  コンパイルオプション `-compile(no_native)` を追加。
 
 ```
                Related Id(s): PR-1390
@@ -1260,6 +1262,7 @@ compiler-7.1
 
 ### OTP-12148    Application(s): compiler, erts
 
+- 第一要素がアトムであるタプルの検査を最適化
 
 ```
                Optimized test for tuples with an atom as first
@@ -1310,6 +1313,8 @@ compiler-7.1
 ### OTP-14000    Application(s): compiler, erts, stdlib
 
 
+- `math` モジュールに `fmod/2` 関数の追加。
+
 ```
                The function fmod/2 has been added to the math module.
 ```
@@ -1323,6 +1328,8 @@ compiler-7.1
 ```
 
 ### OTP-14058    Application(s): compiler
+
+- 同一のマップキーが複数ある場合に、コンパイラが警告を出す。
 
 
 ```
@@ -1338,6 +1345,9 @@ compiler-7.1
 
 ### OTP-14071    Application(s): compiler, stdlib
 
+- `export_all` が使われた場合にデフォルトで警告する。`nowarn_export_all` で
+  無効化可能。
+
 
 ```
                By default, there will now be a warning when export_all
@@ -1347,6 +1357,10 @@ compiler-7.1
 
 ### OTP-14072    Application(s): compiler
 
+- マップのパターンマッチを最適化。
+  - すべてのキーではなく、各節に共通のキーのみを検査。
+  - これはマップのパターンマッチで、キーのルックアップ回数を削減する。
+- [訳注] 英語分からない コミットはきっとこれ > https://github.com/erlang/otp/commit/caa3c36a331009fa69c7a524090f455e9e296987
 
 ```
                Optimize maps pattern matching by only examining the
@@ -1421,6 +1435,13 @@ compiler-7.1
 
 ### OTP-14401    Application(s): compiler
 
+- 将来のリリースで `erlang:get_stacktrace/0` は `try` 式内部で呼ばれたとき
+  のみ機能するようになる。(それ以外では `[]` を返す)
+- この変更の備えを助けるため、将来に機能しなくなる方法で `get_stacktrace/0` が
+  呼ばれた場合に、コンパイラはデフォルトで警告を出す。
+  - `catch` も `try` も使わない関数の中で `get_stacktrace/0` が使われた
+    場合には警告は出ない。
+  - その関数が `try` の内部で呼ばれるならば合法であり得るため。
 
 ```
                In a future release, erlang:get_stacktrace/0 will
@@ -1459,6 +1480,7 @@ crypto-4.0
 
 ### OTP-14247    Application(s): crypto
 
+- crypto アプリケーションを最新化したため、LibreSSL が利用可能になった。
 
 ```
                LibreSSL can now be used by the modernized crypto app.
@@ -1467,6 +1489,8 @@ crypto-4.0
 ### OTP-14316    Application(s): asn1, crypto, runtime_tools
 
 - Related Id(s): PR-1390
+- HiPE でサポートされていない `on_load` を持つモジュールに
+  コンパイルオプション `-compile(no_native)` を追加。
 
 ```
                Related Id(s): PR-1390
@@ -1492,6 +1516,7 @@ crypto-4.0
 ### OTP-13779    Application(s): crypto
 
 - Related Id(s): ERL-82, PR-1138
+- CMAC の基本的なサポート。
 
 ```
                Related Id(s): ERL-82, PR-1138
@@ -1544,6 +1569,8 @@ crypto-4.0
 ### OTP-14092    Application(s): crypto
 
 - Related Id(s): PR-1291
+- RFC 7539 の暗号 chacha20-poly1305 が OpenSSL >= 1.1 に対して有効化。
+- mururu に感謝。
 
 ```
                Related Id(s): PR-1291
@@ -1585,6 +1612,7 @@ crypto-4.0
 
 ### OTP-14274    Application(s): crypto
 
+- `crypto:rand_uniform/2` を廃止予定とした。暗号学的に強くないため。
 
 ```
                Deprecate crypto:rand_uniform/2 as it is not
@@ -1594,6 +1622,8 @@ crypto-4.0
 ### OTP-14317    Application(s): crypto, stdlib
 
 - Related Id(s): PR-1372
+- Crypto アプリケーションは暗号学的に強いランダム数値(フロート < 1.0 と
+  任意の範囲の整数)を `rand` モジュールのプラグインとしてサポートする。
 
 ```
                Related Id(s): PR-1372
@@ -1930,6 +1960,12 @@ erts-9.0
 
 ### OTP-13968    Application(s): erts
 
+- 幾つかの HiPE コンパイルされたコードのロード、アップグレード、パージに
+  関数バグを修正。
+  - パージされたモジュールのネイティブコードメモリが開放されない。
+  - モジュールアップグレード後に誤った関数が呼ばれることがある。
+  - `erlang:check_process_code` がネイティブコードからの再帰呼び出しを
+    検査しない。
 
 ```
                Fix various bugs regarding loading, upgrade and purge
@@ -1947,6 +1983,9 @@ erts-9.0
 
 ### OTP-14238    Application(s): erts, hipe
 
+- HiPE オプショナルの LLVM バックエンドが LLVM バージョン 3.9 かそれ以降を
+  要求する。
+  - それ以前のバージョンでは erts 内部構造への依存を強制されるため。
 
 ```
                Hipe optional LLVM backend does require LLVM version
@@ -1969,6 +2008,7 @@ erts-9.0
 
 ### OTP-14303    Application(s): erts
 
+- クラッシュダンプの `Slogans` がより複雑な項を含むように拡張された。
 
 ```
                Slogans in crash dumps have been extended to print more
@@ -2020,6 +2060,8 @@ erts-9.0
 
 ### OTP-14324    Application(s): erts
 
+- `epmd -kill` が何らかのエラーで殺せなかった場合、失敗のステータスコードを
+  返すよう修正。
 
 ```
                Fix 'epmd -kill' to return a failure exit status code
@@ -2028,6 +2070,10 @@ erts-9.0
 
 ### OTP-14335    Application(s): erts
 
+- ダーティースケジューラー関連のバグを修正
+  - `+SDPcpu` コマンドライン引数が、ダーティー CPU スケジューラーをゼロにセットする。
+  - `erlang:system_flag(multi_scheduling, _)` が、ダーティースケジューラーサポー
+    トと合わせて、ただひとつのノーマルスケジューラーが使われた場合に失敗する。
 
 ```
                Fixed the following dirty scheduler related bugs:
@@ -2245,6 +2291,8 @@ erts-9.0
 
 ### OTP-13860    Application(s): erts
 
+- SMP サポートでビルドされた際に、ダーティースケジューラーがデフォルトで有効化さ
+  れる。
 
 ```
                Dirty schedulers are now enabled by default when the
@@ -2253,6 +2301,11 @@ erts-9.0
 
 ### OTP-13903    Application(s): erts
 
+- ETS で、大きな set, bag, duplicate_bag に対する参照、挿入、削除の
+  速度が改善された。
+  - ハッシュのロードファクターの大きな削減による。
+  - この速度改善は、テーブルエントリーごとに1ワード以下のコストである。
+  - 256 エントリ以下のテーブルでは影響はない。
 
 ```
                Improved ETS lookup/insert/delete speed for large set,
