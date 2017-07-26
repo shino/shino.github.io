@@ -2223,6 +2223,10 @@ erts-9.0
 
 ### OTP-13692    Application(s): erts, stdlib
 
+- 新しい2つのガードBIF `floor/1` と `ceil/1`。
+  - どちらも整数を返す。
+  - `math` モジュールには、同じ名前の新しい BIF が追加され、それらは
+    浮動小数点数を返す。
 
 ```
                There are two new guard BIFs 'floor/1' and 'ceil/1'.
@@ -3788,6 +3792,10 @@ stdlib-3.4
 ### OTP-14295    Application(s): stdlib
 
 - Related Id(s): PR-1372
+- 新しいデフォルトの擬似乱数生成アルゴリズム `Xoroshiro116+` が `rand` モジュー
+  ルに実装された。
+- 古いアルゴリズムはいくつかの血管があり、廃止予定となるか、修正版が追加された。
+  ドキュメントを参照。
 
 ```
                Related Id(s): PR-1372
@@ -3882,6 +3890,10 @@ stdlib-3.4
 
 ### OTP-13692    Application(s): erts, stdlib
 
+- 新しい2つのガードBIF `floor/1` と `ceil/1`。
+  - どちらも整数を返す。
+  - `math` モジュールには、同じ名前の新しい BIF が追加され、それらは
+    浮動小数点数を返す。
 
 ```
                There are two new guard BIFs 'floor/1' and 'ceil/1'.
@@ -3892,6 +3904,8 @@ stdlib-3.4
 
 ### OTP-13801    Application(s): stdlib
 
+- OTP behavior で `code_change`, `terminate`, `handle_info` コールバックを
+  オプションに変更。
 
 ```
                Making code_change, terminate and handle_info callbacks
@@ -3927,6 +3941,10 @@ stdlib-3.4
 
 ### OTP-14001    Application(s): stdlib
 
+- `proc_lib` を用いたプロセスから受信される `EXIT` シグナルが `spawn_link` を
+  用いて開始されたプロセスからの `EXIT` シグナルのように見えるようになった。
+  - 特に、これはスタックトレースが `EXIT` シグナルに含まれることを意味し、
+    プロセスクラッシュがどこで起きたかが分かるようになった。
 
 ```
                The EXIT signals received from processes using proc_lib
@@ -3938,6 +3956,10 @@ stdlib-3.4
 
 ### OTP-14035    Application(s): stdlib
 
+- `sets:add_element/2` が既に存在する要素の追加のときに速くなった。
+  また、 `sets:del_element/2` が存在しない要素の際に速くなった。
+  - この最適化により、例えば多くの重複要素を持つ `sets:union/2` は
+    2桁高速になることもある。
 
 ```
                sets:add_element/2 is faster when adding an element
@@ -3962,6 +3984,7 @@ stdlib-3.4
 ### OTP-14038    Application(s): stdlib
 
 - Related Id(s): PR-1235
+- `rand:jump/[0|1]` 関数の追加。
 
 ```
                Related Id(s): PR-1235
@@ -3987,6 +4010,9 @@ stdlib-3.4
 
 ### OTP-14066    Application(s): stdlib
 
+- `assert.hrl` のアサートマクロが、コメント追加のための追加引数がある
+  バージョンを持つようになった。
+  - エラーリポートとして、なぜ検査が失敗したかの説明を表示できる。
 
 ```
                Each assert macro in assert.hrl now has a corresponding
