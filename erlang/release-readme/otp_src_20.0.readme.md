@@ -2338,6 +2338,8 @@ erts-9.0
 
 ### OTP-13976    Application(s): erts
 
+- アトムの現在の数と最大数を取得するため、 `erlang:system_info(atom_count)` と
+  `erlang:system_info(atom_limit) を追加。
 
 ```
                Add erlang:system_info(atom_count) and
@@ -2370,6 +2372,8 @@ erts-9.0
 
 ### OTP-14149    Application(s): erts
 
+- サブバイナリをヒープバイナリに変換することでメモリプレッシャーを削減。
+  - これはガベージコレクション中に行われる。
 
 ```
                Reduce memory pressure by converting sub-binaries to
@@ -2417,6 +2421,10 @@ erts-9.0
 ```
 
 ### OTP-14186    Application(s): erts, kernel
+
+- OS シグナルを処理する混て、Erlang にイベントっマネージャを導入。
+  - OS シグナルのいくつかは Kernal アプリケーションに登録されており、
+    それらはそこでドキュメントされている。
 
 
 ```
@@ -2527,6 +2535,15 @@ erts-9.0
 
 ### OTP-14337    Application(s): erl_interface, erts, jinterface
 
+- 分散した erlang ノード間、また `erl_interface`, jinterface で用いる
+  external format から、古い `latin1` でのアトム生成を削除。
+  - 新しい `utf8` アトムフォーマットは OTP R16 で導入された。
+  - これにより、 OTP 20 ノードは R16 より古いノードとは接続できない。
+- `latin1` でエンコードされたアトムは `term_to_binary()` で、 `latin1`
+  エンコーディングにより利用可能である。
+  - 将来の Erlang/OTP リリースでは、すべてのアトムは、デフォルトで `utf9` でエン
+    コードされることに注意。詳細は `erlang:term_to_binary/2` を参照。
+
 
 ```
                Remove generation of atoms in old latin1 external
@@ -2556,6 +2573,7 @@ erts-9.0
 
 ### OTP-14348    Application(s): erts
 
+- デバッグ用の新しい bif `erlang:list_to_port/1` を追加。
 
 ```
                Added new debug bif erlang:list_to_port/1.
@@ -2578,6 +2596,10 @@ erts-9.0
 ### OTP-14357    Application(s): erts, kernel, runtime_tools
 
 - Related Id(s): PR-1326
+- サポートされるプラットフォームにおいて、ソケットがデバイスにバインド出来る
+  (`SO_BINDTODEVICE`)。
+- これは、例えば Linux では VRF-Lite サポートで実装されている。VRF と Github
+  pull request #1326 を参照。
 
 ```
                Related Id(s): PR-1326
@@ -2593,6 +2615,12 @@ erts-9.0
 
 ### OTP-14380    Application(s): erts
 
+- ダーティースケジューラーの推奨スタックをセットするため、次の `erl` コマンドラ
+  イン引数を追加
+  - `+sssdcpu`: ダーティー CPU スケジューラーのため
+  - `+sssdio`: ダーティー IO スケジューラーのため
+  - ダーティースケジューラーの、デフォルト推奨スタックサイズは 40 キロワードであ
+    る。
 
 ```
                Added the following erl command line arguments with
@@ -2678,6 +2706,8 @@ erts-9.0
 
 ### OTP-14438    Application(s): erts
 
+- 幾つかのシステムプロセスについて、 off-heap メッセージキューを有効化。
+  - 多数のメッセージを受け取る可能性があるため。
 
 ```
                Enabled off-heap message queue for some system
@@ -2937,6 +2967,7 @@ kernel-5.3
 
 ### OTP-14310    Application(s): erl_interface, kernel
 
+- Linux で `gethostname` が、不適切に `enametoolong` で失敗するバグを修正。
 
 ```
                Fix bug where gethostname would incorrectly fail with
@@ -3049,6 +3080,8 @@ kernel-5.3
 ### OTP-14409    Application(s): kernel
 
 - Related Id(s): PR-1420
+- `shell_history` をディスクに保存するオプションを追加。
+  - セッションをまたいで履歴を再利用するため。
 
 ```
                Related Id(s): PR-1420
@@ -3058,6 +3091,18 @@ kernel-5.3
 ```
 
 ### OTP-14417    Application(s): kernel, stdlib
+
+- `gen_server`, `gen_statem`, `proc_lib` から生成されるクラッシュレポートのサイ
+  ズが、Kernel アプリケーションの変数 `error_logger_format_depth` によって
+  制限される。
+  - 目的は、プロセスが巨大なメッセージキューやステートクラッシュを保つ場合に、
+    `error_logger` プロセスへのメッセージサイズを制限することである。
+- `proc_lib` により生成されるクラッシュレポートは、クラッシュ新しいタグ
+  `message_queue_len` を含む。
+  - neighbour レポートには新しいタグ `current_stacktrace` が含まれる。
+  - また neighbour レポートはメッセージとディスショナリのタグを含まなくなる。
+- 新しい関数 `error_logger:get_format_depth/0` は Kernel アプリケーションの
+  変数 `error_logger_format_depth` の値を返す。
 
 
 ```
