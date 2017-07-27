@@ -105,16 +105,16 @@ def main(lines)
   read_body1(lines)
 
   while line = lines_next(lines) do
-    if /^ -{60}/ =~ line
+    if /^ +-{60}/ =~ line
       # beginning of large header, like HIGHLIGHTS
-      /^ --- (.*) -+$/ =~ lines.next()
+      /^ +--- (.*) -+$/ =~ lines.next()
       if Regexp.last_match
         h1(Regexp.last_match[1])
         # skip next line, which should be " -------..."
         lines.next()
         read_body1(lines)
       end
-    elsif /^ --- (.*) ---$/ =~ line
+    elsif /^ +--- (.*) ---$/ =~ line
       # beginning of small header, like "Fixed Bugs and Malfunctions"
       h2(Regexp.last_match[1])
     elsif /^ +(OTP-.*)$/ =~ line
@@ -122,7 +122,7 @@ def main(lines)
       read_item_body(lines)
     else
       # Print out untreated lines
-      # puts "**************#{line.chomp}*************" if line.chomp.length > 0
+      STDERR.puts "IGNORED: [#{line.chomp}]" if line.chomp.length > 0
     end
   end
 end
