@@ -4024,6 +4024,10 @@ stdlib-3.4
 
 ### OTP-14068    Application(s): stdlib
 
+- `error_logger_tty_h` と `error_logger_file_h` は、非ローカルメッセージに、
+  メッセージ本体のあとではなく、前にノード情報を挿入する。
+  - これは、可読性のためであり、またメッセージ末の行終端プロパティを変更しないた
+    めである。
 
 ```
                error_logger_tty_h and error_logger_file_h now inserts
@@ -4055,6 +4059,8 @@ stdlib-3.4
 
 ### OTP-14089    Application(s): stdlib
 
+- `gen_server` プロセスがクラッシュすると、デバッグを容易にするため、
+  クライアント向けにスタックトレースが表示される。
 
 ```
                When a gen_server process crashes, the stacktrace for
@@ -4098,6 +4104,8 @@ stdlib-3.4
 
 ### OTP-14102    Application(s): stdlib
 
+- `take/2` が `dict`, `orddict`, `gb_trees` に追加、`take_any/2` が
+  `gb_trees` に追加された。
 
 ```
                take/2 has been added to dict, orddict, and gb_trees.
@@ -4114,6 +4122,8 @@ stdlib-3.4
 ### OTP-14168    Application(s): stdlib
 
 - Related Id(s): PR-1289
+- スーパーバイザーの再起動頻度(intensity と period)チューニングのアドバイスを
+  System Documentation - Design Principles - Supervisor Behaviour に追加。
 
 ```
                Related Id(s): PR-1289
@@ -4249,6 +4259,8 @@ stdlib-3.4
 ### OTP-14328    Application(s): stdlib
 
 - Related Id(s): PR-1382
+- `rand` モジュールに新しい2つの関数 `normal/2` と `normal_s/3` を追加。
+  - どちらも正規分布の擬似乱数を、引数の平均と分散値に従い、発生させる。
 
 ```
                Related Id(s): PR-1382
@@ -4338,6 +4350,17 @@ stdlib-3.4
 
 ### OTP-14417    Application(s): kernel, stdlib
 
+- `gen_server`, `gen_statem`, `proc_lib` から生成されるクラッシュレポートのサイ
+  ズが、Kernel アプリケーションの変数 `error_logger_format_depth` によって
+  制限される。
+  - 目的は、プロセスが巨大なメッセージキューやステートクラッシュを保つ場合に、
+    `error_logger` プロセスへのメッセージサイズを制限することである。
+- `proc_lib` により生成されるクラッシュレポートは、クラッシュ新しいタグ
+  `message_queue_len` を含む。
+  - neighbour レポートには新しいタグ `current_stacktrace` が含まれる。
+  - また neighbour レポートはメッセージとディスショナリのタグを含まなくなる。
+- 新しい関数 `error_logger:get_format_depth/0` は Kernel アプリケーションの
+  変数 `error_logger_format_depth` の値を返す。
 
 ```
                The size of crash reports created by gen_server,
@@ -4385,7 +4408,7 @@ tools-2.10
 
 ### OTP-14339    Application(s): tools
 
-- Related Id(s): ERL-395
+- ppRelated Id(s): ERL-395
 
 ```
                Related Id(s): ERL-395
