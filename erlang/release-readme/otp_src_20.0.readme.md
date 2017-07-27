@@ -1,4 +1,3 @@
-
 Erlang/OTP 20.0 Release README (Japanese, unofficial)
 =====================================================
 
@@ -89,9 +88,9 @@ HIGHLIGHTS
 - Related Id(s): OTP-10309
 - **POTENTIAL INCOMPATIBILITY**
 - 文字列のユニコードサポート。
-  - unicode モジュールに正規化関数を追加。
-  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスターに対
-    して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
+  - `unicode` モジュールに正規化関数を追加。
+  - `string` モジュール API を拡張: 改善されたユニコード処理と書要素クラスターに対
+    して機能する関数を追加。新しい関数は `unicode:chardata()` 型に作用するため、
     UTF-8 バイナリを入力として受け取る。
 - 古い string API は obsolete とマークされた。
 - 返り値が幾つかのエラーケースで変更された。
@@ -601,9 +600,9 @@ POTENTIAL INCOMPATIBILITIES
 - Related Id(s): OTP-10309
 - **HIGHLIGHT**
 - 文字列のユニコードサポート。
-  - unicode モジュールに正規化関数を追加。
-  - string モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
-    して機能する関数を追加。新しい関数は unicode:chardata() 型に作用するため、
+  - `unicode` モジュールに正規化関数を追加。
+  - `string` モジュール API を拡張: 改善されたユニコード処理と書要素クラスタに対
+    して機能する関数を追加。新しい関数は `unicode:chardata()` 型に作用するため、
     UTF-8 バイナリを入力として受け取る。
 - 古い string API は obsolete とマークされた。
 - 返り値が幾つかのエラーケースで変更された。
