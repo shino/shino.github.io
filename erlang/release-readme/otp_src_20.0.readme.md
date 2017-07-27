@@ -173,11 +173,11 @@ HIGHLIGHTS
 ### OTP-14059    Application(s): kernel, stdlib
 
 - 変更されたコードを検知する関数が追加された
-- code:modified_modules/0 はロードされているモジュールの中で
+- `code:modified_modules/0` はロードされているモジュールの中で
   ディスク上変更されているものを、すべて返す
-- code:module_status/1 はモジュールの状態を返す
-- シェルと c モジュールでは mm/0 が code:modified_modules/0 の
-  短縮形であり、 lm/0 は変更されたすべてのモジュールをリロードする。
+- `code:module_status/1` はモジュールの状態を返す
+- `shell` `c` モジュールでは `mm/0` が `code:modified_modules/0` の
+  短縮形であり、 `lm/0` は変更されたすべてのモジュールをリロードする。
 
 ```
                Functions for detecting changed code has been added.
