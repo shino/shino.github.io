@@ -1,4 +1,4 @@
-# Lager の multiple sinks と tracer
+# Lager の multiple sinks と フィルター付き tracing
 
 ## 動機と結論
 
