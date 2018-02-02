@@ -4,6 +4,10 @@ Random text by shino
 
 ## Erlang/OTP
 
+Little Notes (Japanese)
+
+- [Lager multiple sinks and trace filter](erlang/lager_sink_and_trace_filter.md)
+
 Release README's, partially translated to Japanese.
 
 - [OTP 20.0](erlang/release-readme/otp_src_20.0.readme.md)
