@@ -268,11 +268,110 @@ start() ->
             ok
     end.
 
-%%%-----------------------------------------------------------------
-%%% Start callback specified in child specification to supervisor, see start/0
--spec start_link() -> {'ok', pid()} | {'error', any()}.
-
 start_link() ->
     gen_event:start_link({local, ?MODULE},
                          [{spawn_opt,[{message_queue_data, off_heap}]}]).
 ```
+
+## フォーマッター
+
+- フォーマッターはハンドラー実装でのログイベントの最終フォーマット化に使われる
+  - ハンドラーコールバックはフォーマッタの情報を
+  - `HModule:log/2` の引数2から、ハンドラー設定として受け取る
+- フォーマッター情報の構成
+  - フォーマッターモジュール `FModule`
+    - `format(LogEvent,FConfig) -> FormattedLogEntry`
+  - その設定 `FConfig`
+- オプショナルコールバック
+  - `check_config(FConfig)`
+  - フォーマッター情報を設定、または変更する時に正当性チェックができる
+
+## 設定
+
+- システム開始時、Logger は Kernel 設定パラメータで設定される
+- 実行時、Logger 設定は API 関数で変更できる
+
+### プライマリロガー設定 (詳細略)
+
+- `get_primary_config/0`
+- `set_primary_config/1,2`
+- `update_primary_config/1`
+- `add_primary_filter/2`
+- `remove_primary_filter/1`
+
+### ハンドラー設定 (詳細略)
+
+- `get_handler_config/0,1`
+- `set_handler_config/2,3`
+- `update_handler_config/2`
+- `add_handler_filter/3`
+- `remove_handler_filter/2`
+- `update_formatter_config/2,3`
+
+### Kernel 設定パラメータ
+
+- `logger = [Config]`
+  - Logger の設定
+    - ただし以下は除外
+      - プライマリログレベルは `logger_level` で設定する
+      - SASL エラーロギングは `logger_sasl_compatible` で設定する
+  - `Config` は次のうちから任意の数
+    - `{handler, default, undefined}`
+      - デフォルトハンドラーを無効化する
+    - `{handler, HandlerId, Module, HandelrConfig}`
+      - デフォルトハンドラーの設定変更
+      - または新しいハンドラーの追加
+    - `{filters, FilterDefault, [Filter]}`
+      - プライマリフィルタの追加
+    - `{module_level, Level, [Module]}`
+      - モジュールログレベルの設定
+- `logger_level = Level`
+  - プライマリログレベルの設定
+- `logger_sasl_compatible = true | false`
+  - SASL エラーロギングとの互換性を指定する
+
+### 設定例: `standard_io` の代わりにファイルに出力する
+
+```
+[{kernel,
+  [{logger,
+    [{handler, default, logger_std_h,  % {handler, HandlerId, Module,
+      #{config => #{type => {file,"log/erlang.log"}}}}  % Config}
+    ]}]}].
+```
+
+### 設定例: 一行ログ形式にする
+
+```
+[{kernel,
+  [{logger,
+    [{handler, default, logger_std_h,
+      #{formatter => {logger_formatter, #{single_line => true}}}}
+    ]}]}].
+```
+
+### 設定例: pid を出力する
+
+```
+[{kernel,
+  [{logger,
+    [{handler, default, logger_std_h,
+      #{formatter => {logger_formatter,
+                        #{template => [time," ",pid," ",msg,"\n"]}}}}
+    ]}]}].
+```
+
+### 設定例: エラーレベルのファイルとデバッグログファイルに分けて出力する
+
+```
+[{kernel,
+  [{logger,
+    [{handler, default, logger_std_h,
+      #{level => error,
+        config => #{type => {file, "log/erlang.log"}}}},
+     {handler, info, logger_std_h,
+      #{level => debug,
+        config => #{type => {file, "log/debug.log"}}}}
+    ]}]}].
+```
+
