@@ -168,4 +168,111 @@ logger:debug(#{got => connection_request, id => Id, state => State},
     - Logger はハンドラーコールバックを呼び出す
   - `stop` に設定すると Logger は対応するイベントを破棄する
 
+関数
 
+- プライマリフィルター
+  - `logger:add_primary_filter/2`, `logger:remove_primary_filter/1`
+  - フィルターに ID がある
+- ハンドラーフィルター
+  - `logger:add_handler_filter/3`, `logger:remove_handler_filter/2`
+  - ハンドラーに ID がある
+  - フィルターにも ID がある
+- 設定参照
+  - `logger:get_config/0`
+  - `logger:get_primary_config/0`
+  - `logger:get_handler_config/1`
+- ユーティリティ
+  - `logger_filters:domain/2`, `logger_filters:level/2`, `logger_filters:progress/2`,
+    `logger_filters:remote_gl/2`
+
+`logger_filters:domain/2` の実行例
+
+```
+16> logger_filters:domain(#{meta => #{domain => [my_app]}}, {log, equal, [my_app]}).
+#{meta => #{domain => [my_app]}}
+17> logger_filters:domain(#{meta => #{domain => [my_app]}}, {log, equal, [otp]}).
+ignore
+```
+
+使用例
+
+```
+logger:set_handler_config(default, filter_default, log).
+Filter = {fun logger_filters:domain/2, {stop, sub, [otp, sasl]}}.
+logger:add_handler_filter(default, no_sasl, Filter).
+```
+
+
+## ハンドラー
+
+- `log/2` をエキスポートしたモジュールとして定義される。
+
+```
+log(LogEvent, Config) -> void()
+```
+
+- この関数はログイベントがすべてのプライマリフィルターとハンドラーフィルターを
+  通過した場合に呼ばれる
+  - 関数呼び出しはクライアントプロセス上で実行される
+- Logger はハンドラーコールバックを複数追加することを許容する
+  - 同じコールバックモジュールを使った複数のハンドラーインスタンスを追加できる。
+  - 個々のインスタンスはハンドラー ID で区別される
+- オプショナルコールバック関数
+  - `adding_handler/1`, `changng_config/2`, `removing_handler/1`
+- ビルトインハンドラー
+  - `logger_std_h`
+    - OTP が用いるデフォルトハンドラー
+    - 複数インスタンス可能
+    - ターミナルかファイルに出力
+  - `logger_disk_log_h`
+    - `disk_log` を使う以外は `logger_std_h` と同じ
+  - `error_logger`
+    - 後方互換性のためだけ
+    - デフォルトでは開始されず、 `error_logger` イベントハンドラーが
+      `error_logger:add_report_handler/1,2` で追加された時に開始される。
+    - 以前の STDLIB, SASL の `error_logger` イベントハンドラーは存在するが、
+      OTP 21.0 以降では追加されない。
+
+`error_logger` まわりでソースをいくつか参照しておく。
+
+- `error_logger:add_report_hander` は `logger` と `gen_event` に
+  ハンドラーを登録している
+
+```
+add_report_handler(Module, Args) when is_atom(Module) ->
+    _ = logger:add_handler(?MODULE,?MODULE,#{level=>info,filter_default=>log}),
+    gen_event:add_handler(?MODULE, Module, Args).
+```
+
+- `error_logger:start` は `logger_sup` に自分を追加して
+  `start_link` で `gen_event` プロセスを開始している
+
+```
+start() ->
+    case whereis(?MODULE) of
+        undefined ->
+            ErrorLogger =
+                #{id => ?MODULE,
+                  start => {?MODULE, start_link, []},
+                  restart => transient,
+                  shutdown => 2000,
+                  type => worker,
+                  modules => dynamic},
+            case supervisor:start_child(logger_sup, ErrorLogger) of
+                {ok,_} ->
+                    ok;
+                Error ->
+                    Error
+            end;
+        _ ->
+            ok
+    end.
+
+%%%-----------------------------------------------------------------
+%%% Start callback specified in child specification to supervisor, see start/0
+-spec start_link() -> {'ok', pid()} | {'error', any()}.
+
+start_link() ->
+    gen_event:start_link({local, ?MODULE},
+                         [{spawn_opt,[{message_queue_data, off_heap}]}]).
+```
