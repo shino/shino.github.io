@@ -54,4 +54,4 @@
   - **log level check** (ログレベルチェック)と
   - ゼロ個以上の **filter functions** (フィルター関数)から構成される
 - 図
-  - http://erlang.org/doc/apps/kernel/logger_arch.png
+  - ![OTP doc](http://erlang.org/doc/apps/kernel/logger_arch.png)
