@@ -2,6 +2,7 @@
 
 - http://erlang.org/doc/apps/kernel/logger_chapter.html
   - 21.0 リリース版
+- メモと言うか、雑な翻訳のほうが近い
 
 ## はじめに (Top of chapter)
 
@@ -218,7 +219,7 @@ log(LogEvent, Config) -> void()
   - 同じコールバックモジュールを使った複数のハンドラーインスタンスを追加できる。
   - 個々のインスタンスはハンドラー ID で区別される
 - オプショナルコールバック関数
-  - `adding_handler/1`, `changng_config/2`, `removing_handler/1`
+  - `adding_handler/1`, `changing_config/2`, `removing_handler/1`
 - ビルトインハンドラー
   - `logger_std_h`
     - OTP が用いるデフォルトハンドラー
