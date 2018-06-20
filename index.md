@@ -7,6 +7,7 @@ Random text by shino
 Little Notes (Japanese)
 
 - [Lager multiple sinks and trace filter](erlang/lager_sink_and_trace_filter.md)
+- [Logger doc memo](erlang/logger.md)
 
 Release README's, partially translated to Japanese.
 
