@@ -640,6 +640,16 @@ logger:add_handler(my_disk_log_h, logger_disk_log_h,
 - ログイベントのサイズを制限する方法については、 `logger_formatter(3)` を参照のこと
   - http://erlang.org/doc/man/logger_formatter.html
 
+# リファレンスからいくつか抜粋
+
+## ドメイン
+
+[logger_filters](http://erlang.org/doc/man/logger_filters.html#domain-2}
+
+**TODO**
+
+- sub とか equal あたりを書いておく
+
 # 以下、ドキュメント以外の話
 
 ## simple logger
