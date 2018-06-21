@@ -13,6 +13,13 @@ Release README's, partially translated to Japanese.
 
 - [OTP 20.0](erlang/release-readme/otp_src_20.0.readme.md)
 
+## Me
+
+- GitHub: [](https://github.com/shino)
+- Twitter: [](https://twitter.com/itawasa/)
+- BitBucket: [](https://bitbucket.org/shino/) (completely inactive)
+- LinkedIn: [](https://www.linkedin.com/in/shunichi-shinohara-2172911a/)
+
 ## sandbox
 
 Relative link, in site
