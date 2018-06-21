@@ -443,6 +443,54 @@ start_link() ->
     `true` に設定する
   - すべての SASL レポートはメタデータの `domain` フィールドが `[otp, sasl]` である
 
+### 実装
+
+`gen_server.erl` から error_logger 互換の呼び出し部分抜粋:
+
+```
+error_info(Reason, Name, From, Msg, Mod, State, Debug) ->
+    ?LOG_ERROR(#{label=>{gen_server,terminate},
+                 name=>Name,
+                 last_message=>Msg,
+                 state=>format_status(terminate, Mod, get(), State),
+                 reason=>Reason,
+                 client_info=>client_stacktrace(From)},
+               #{domain=>[otp],
+                 report_cb=>fun gen_server:format_log/1,
+                 error_logger=>#{tag=>error}}),
+```
+
+`error_logger.erl` では `#{error_logger => #{tag => Tag}}` で拾う:
+
+```
+do_log(Level,{Format,Args},#{?MODULE:=#{tag:=Tag}}=Meta)
+```
+
+error_logger はその他の形式は捨てる
+
+### lager との関連
+
+- Lager は 3.6.3 で部分的な OTP 21 互換性が入っている
+  - OTP 21 support · erlang-lager/lager@05bc579
+  - https://github.com/erlang-lager/lager/commit/05bc579028d3e87f3e043238e08480354c9fd222
+- OTP 21 で lager application が開始された後の状態
+  - sup. tree そのものではないことに注意
+
+```
+logger_sup
+     |
+  (child)
+     |
+     +-- error_logger (gen_event)
+              |           - logger のハンドラー
+              |           - error_logger:start() で開始される
+      (gen_event handler)
+              |
+              +-- error_logger_lager_h
+                          - error_logger (gen_event) のハンドラー
+                          - sup. tree としては lager_handler_watcher_sup 配下に居る
+```
+
 ## エラーハンドリング
 
 - すべてのハンドラーとフォーマッターはログイベントのでデータをフォーマット化する際に
