@@ -1,7 +1,7 @@
 # Logger doc を読んだメモ
 
-- [http://erlang.org/doc/apps/kernel/logger_chapter.html]
-  (http://erlang.org/doc/apps/kernel/logger_chapter.html)
+- [http://erlang.org/doc/apps/kernel/logger_chapter.html](
+  http://erlang.org/doc/apps/kernel/logger_chapter.html)
   - 21.0 リリース版
 - メモと言うか、雑な翻訳のほうが近い
 
@@ -477,8 +477,8 @@ error_logger はその他の形式は捨てる
 
 - Lager は 3.6.3 で部分的な OTP 21 互換性が入っている
   - OTP 21 support · erlang-lager/lager@05bc579
-  - [lager/commit/05bc579]
-    (https://github.com/erlang-lager/lager/commit/05bc579028d3e87f3e043238e08480354c9fd222)
+  - [lager/commit/05bc579](
+    https://github.com/erlang-lager/lager/commit/05bc579028d3e87f3e043238e08480354c9fd222)
 - OTP 21 で lager application が開始された後の状態
   - sup. tree そのものではないことに注意
 
@@ -640,8 +640,8 @@ logger:add_handler(my_disk_log_h, logger_disk_log_h,
 
 - ログイベントのサイズはハンドラーに必要なメモリ量に影響を与える。
 - ログイベントのサイズを制限する方法については、 `logger_formatter(3)` を参照のこと
-  - [http://erlang.org/doc/man/logger_formatter.html]
-    (http://erlang.org/doc/man/logger_formatter.html)
+  - [http://erlang.org/doc/man/logger_formatter.html](
+    http://erlang.org/doc/man/logger_formatter.html)
 
 # リファレンスからいくつか抜粋
 
