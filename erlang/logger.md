@@ -658,7 +658,7 @@ sys.config
             [
              %% デフォルトの Logger ハンドラーを無効化
              {handler, default, undefined}
-            ]
+            ]}
 ].
 ```
 
@@ -685,7 +685,22 @@ sys.config
       #{filter_default => log,filters => [],level => notice}}
 ```
 
-
 - (relx パッケージした後) start すると、クラッシュログはこの simple ハンドラー経由で
   `erlang.log.*` に流れてしまうので困る
+- ドキュメントにないが、次の設定で simple ハンドラーもナシに出来る
+
+```
+[
+ {kernel, [
+           {logger,
+            [
+             %% デフォルトの Logger ハンドラーを無効化
+             %% ソースコード上ここは参照されないが、ドキュメントにあるとおりにしておく
+             {handler, default, undefined}
+            ]},
+           %% simple ハンドラーを無効化する
+           {error_logger, silent}
+
+].
+```
 
