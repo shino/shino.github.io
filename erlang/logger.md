@@ -49,7 +49,7 @@
 
 シェルを起動してみてみる
 
-```
+```erlang
 1> logger:get_config().
 #{handlers =>
       [#{config =>
@@ -112,7 +112,7 @@
 
 マクロをみてみる。 `lib/kernel/include/logger.hrl` から抜粋。
 
-```
+```erlang
 -define(LOG_INFO(A),?DO_LOG(info,[A])).
 -define(LOG_INFO(A,B),?DO_LOG(info,[A,B])).
 -define(LOG_INFO(A,B,C),?DO_LOG(info,[A,B,C])).
@@ -138,7 +138,7 @@
 
 `lib/kernel/src/logger_internal.hrl` から抜粋
 
-```
+```erlang
 -define(LOG_NONE,-1).
 -define(EMERGENCY,0).
 -define(ALERT,1).
@@ -163,7 +163,7 @@
 
 レポートの例
 
-```
+```erlang
 logger:debug(#{got => connection_request, id => Id, state => State},
              #{report_cb => fun(R) -> {"~p",[R]} end})
 ```
@@ -223,7 +223,7 @@ logger:debug(#{got => connection_request, id => Id, state => State},
 
 `logger_filters:domain/2` の実行例
 
-```
+```erlang
 16> logger_filters:domain(#{meta => #{domain => [my_app]}}, {log, equal, [my_app]}).
 #{meta => #{domain => [my_app]}}
 17> logger_filters:domain(#{meta => #{domain => [my_app]}}, {log, equal, [otp]}).
@@ -232,7 +232,7 @@ ignore
 
 使用例
 
-```
+```erlang
 logger:set_handler_config(default, filter_default, log).
 Filter = {fun logger_filters:domain/2, {stop, sub, [otp, sasl]}}.
 logger:add_handler_filter(default, no_sasl, Filter).
@@ -243,7 +243,7 @@ logger:add_handler_filter(default, no_sasl, Filter).
 
 - `log/2` をエキスポートしたモジュールとして定義される。
 
-```
+```erlang
 log(LogEvent, Config) -> void()
 ```
 
@@ -274,7 +274,7 @@ log(LogEvent, Config) -> void()
 - `error_logger:add_report_hander` は `logger` と `gen_event` に
   ハンドラーを登録している
 
-```
+```erlang
 add_report_handler(Module, Args) when is_atom(Module) ->
     _ = logger:add_handler(?MODULE,?MODULE,#{level=>info,filter_default=>log}),
     gen_event:add_handler(?MODULE, Module, Args).
@@ -283,7 +283,7 @@ add_report_handler(Module, Args) when is_atom(Module) ->
 - `error_logger:start` は `logger_sup` に自分を追加して
   `start_link` で `gen_event` プロセスを開始している
 
-```
+```erlang
 start() ->
     case whereis(?MODULE) of
         undefined ->
@@ -368,7 +368,7 @@ start_link() ->
 
 ### 設定例: standard_io の代わりにファイルに出力する
 
-```
+```erlang
 [{kernel,
   [{logger,
     [{handler, default, logger_std_h,  % {handler, HandlerId, Module,
@@ -378,7 +378,7 @@ start_link() ->
 
 ### 設定例: 一行ログ形式にする
 
-```
+```erlang
 [{kernel,
   [{logger,
     [{handler, default, logger_std_h,
@@ -388,7 +388,7 @@ start_link() ->
 
 ### 設定例: pid を出力する
 
-```
+```erlang
 [{kernel,
   [{logger,
     [{handler, default, logger_std_h,
@@ -399,7 +399,7 @@ start_link() ->
 
 ### 設定例: エラーレベルのファイルとデバッグログファイルに分けて出力する
 
-```
+```erlang
 [{kernel,
   [{logger,
     [{handler, default, logger_std_h,
@@ -449,7 +449,7 @@ start_link() ->
 
 `gen_server.erl` から error_logger 互換の呼び出し部分抜粋:
 
-```
+```erlang
 error_info(Reason, Name, From, Msg, Mod, State, Debug) ->
     ?LOG_ERROR(#{label=>{gen_server,terminate},
                  name=>Name,
@@ -464,7 +464,7 @@ error_info(Reason, Name, From, Msg, Mod, State, Debug) ->
 
 `error_logger.erl` では `#{error_logger => #{tag => Tag}}` で拾う:
 
-```
+```erlang
 do_log(Level,{Format,Args},#{?MODULE:=#{tag:=Tag}}=Meta)
 ```
 
@@ -478,7 +478,7 @@ error_logger はその他の形式は捨てる
 - OTP 21 で lager application が開始された後の状態
   - sup. tree そのものではないことに注意
 
-```
+```erlang
 logger_sup
      |
   (child)
@@ -566,7 +566,7 @@ logger_sup
 
 設定例
 
-```
+```erlang
 logger:add_handler(my_standard_h, logger_std_h,
                    #{config => #{type => {file,"./system_info.log"},
                                  sync_mode_qlen => 100,
@@ -599,7 +599,7 @@ logger:add_handler(my_standard_h, logger_std_h,
 
 設定例
 
-```
+```erlang
 logger:add_handler(my_disk_log_h, logger_disk_log_h,
                    #{config => #{file => "./my_disk_log",
                                  burst_limit_enable => true,
