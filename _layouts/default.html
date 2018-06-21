@@ -14,6 +14,11 @@
   </head>
   <body>
     <div class="wrapper">
+
+      <section>
+        {{ content }}
+      </section>
+
       <header>
         <h1 class="header">{{ site.title | default: site.github.repository_name }}</h1>
         <p class="header">{{ site.description | default: site.github.project_tagline }}</p>
@@ -35,10 +40,6 @@
           </ul>
         {% endif %}
       </header>
-
-      <section>
-        {{ content }}
-      </section>
 
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme (with a little customization)</small></p>
