@@ -660,3 +660,30 @@ sys.config
 ].
 ```
 
+起動直後の Logger 設定
+
+```erlang
+#{handlers =>
+      [#{filter_default => log,filters => [],
+         formatter => {logger_formatter,#{}},
+         id => error_logger,level => info,module => error_logger},
+       #{filter_default => stop,
+         filters =>
+             [{remote_gl,{fun logger_filters:remote_gl/2,stop}},
+              {domain,{fun logger_filters:domain/2,
+                       {log,super,[otp,sasl]}}},
+              {no_domain,{fun logger_filters:domain/2,
+                          {log,undefined,[]}}}],
+         formatter => {logger_formatter,#{}},
+         id => simple,                        %% simple ハンドラー
+         level => all,
+         module => logger_simple_h}],
+  module_levels => [],
+  primary =>
+      #{filter_default => log,filters => [],level => notice}}
+```
+
+
+
+- 困るのは、クラッシュログがこの simple ハンドラー経由で
+
