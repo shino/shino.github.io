@@ -18,8 +18,8 @@ Release README's, partially translated to Japanese.
 - GitHub: [https://github.com/shino](https://github.com/shino)
 - Twitter: [https://twitter.com/itawasa/](https://twitter.com/itawasa/)
 - BitBucket: [https://bitbucket.org/shino/](https://bitbucket.org/shino/) (completely inactive)
-- LinkedIn: [https://www.linkedin.com/in/shunichi-shinohara-2172911a/]
-  (https://www.linkedin.com/in/shunichi-shinohara-2172911a/)
+- LinkedIn: [https://www.linkedin.com/in/shunichi-shinohara-2172911a/](
+  https://www.linkedin.com/in/shunichi-shinohara-2172911a/)
 
 ## sandbox
 
