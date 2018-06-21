@@ -16,13 +16,15 @@ h1, h2, h3, h4, h5, h6 {
 header {
     background-color: #171717;
     color: #FDFDFB;
+    position: static;
     width:170px;
-    float: none;
+    float: right;
+    margin-bottom: 10px;
 }
 
 footer {
-    position: static;
     float: none;
+    margin-top: 100px;
 }
 
 section {
