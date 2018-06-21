@@ -662,7 +662,7 @@ sys.config
 ].
 ```
 
-起動直後の Logger 設定
+起動直後の Logger 設定、simple ハンドラーが居る:
 
 ```erlang
 #{handlers =>
@@ -689,7 +689,7 @@ sys.config
   `erlang.log.*` に流れてしまうので困る
 - ドキュメントにないが、次の設定で simple ハンドラーもナシに出来る
 
-```
+```erlang
 [
  {kernel, [
            {logger,
@@ -704,3 +704,14 @@ sys.config
 ].
 ```
 
+この設定で起動したときの Logger 設定、simple が居ない(Lager を上げているので error_logger がある):
+
+```erlang
+#{handlers =>
+      [#{filter_default => log,filters => [],
+         formatter => {logger_formatter,#{}},
+         id => error_logger,level => info,module => error_logger}],
+  module_levels => [],
+  primary =>
+      #{filter_default => log,filters => [],level => notice}}
+```
