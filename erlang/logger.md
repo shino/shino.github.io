@@ -637,3 +637,26 @@ logger:add_handler(my_disk_log_h, logger_disk_log_h,
 - ログイベントのサイズはハンドラーに必要なメモリ量に影響を与える。
 - ログイベントのサイズを制限する方法については、 `logger_formatter(3)` を参照のこと
   - http://erlang.org/doc/man/logger_formatter.html
+
+# 以下、ドキュメント以外の話
+
+## simple logger
+
+- kernel application で、 Logger ハンドラーが追加される前にロギングするため
+  simple ロガーが存在する
+- デフォルトハンドラーが追加された時点で削除される
+- しかし `sys.config` で default ハンドラーを無効化すると生き残る
+
+sys.config
+
+```erlang
+[
+ {kernel, [
+           {logger,
+            [
+             %% デフォルトの Logger ハンドラーを無効化
+             {handler, default, undefined}
+            ]
+].
+```
+
