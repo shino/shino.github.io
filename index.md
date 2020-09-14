@@ -13,6 +13,11 @@ Release README's, partially translated to Japanese.
 
 - [OTP 20.0](erlang/release-readme/otp_src_20.0.readme.md)
 
+
+## Keyboard
+
+- [FinCol](keyboard/fincol.md)
+
 ## Me
 
 - GitHub: [https://github.com/shino](https://github.com/shino)
