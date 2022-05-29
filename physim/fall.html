@@ -5,12 +5,16 @@
     <title>Gamedev Canvas Workshop</title>
     <style>
         * { padding: 0; margin: 0; }
-        canvas { background: #eee; display: block; margin: 0 auto; }
+        canvas { background: #eee; display: block; margin: 10px;}
     </style>
 </head>
 <body>
 
     <canvas id="myCanvas" width="480" height="320"></canvas>
+    <div id="params">
+        x = <input id="x" type="text">
+        y = <input id="y" type="text">
+    </div>
 
     <script>
      var canvas = document.getElementById("myCanvas");
@@ -24,8 +28,19 @@
      function draw() {
          ctx.clearRect(0, 0, canvas.width, canvas.height);
          drawBall();
+         setParams();
          x += dx;
          y += dy;
+
+         if ( x < 0 || canvas.width < x || y < 0 || canvas.height < y) {
+             return;
+         }
+         setTimeout(draw, 10);
+     }
+
+     function setParams() {
+         document.getElementById("x").value = x;
+         document.getElementById("y").value = y;
      }
 
      function drawBall() {
@@ -36,7 +51,7 @@
          ctx.closePath();
      }
 
-     setInterval(draw, 10);
+     setTimeout(draw, 10);
     </script>
 </body>
 </html>
