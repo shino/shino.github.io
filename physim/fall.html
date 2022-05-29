@@ -16,6 +16,7 @@
     </div>
 
     <div id="values">
+        t = <input id="t" type="text" disabled>
         x = <input id="x" type="text" disabled>
         y = <input id="y" type="text" disabled>
     </div>
@@ -31,56 +32,85 @@
      var a_x0 = 0;
      var a_y0 = -9.8;
 
+     var t = 0;
      var x0 = 10;
-     var y0 = canvas.height - 50;
-
+     var y0 = canvas.height - 30;
      var v_x0 = 40;
-     var v_y0 = 40;
+     var v_y0 = 80;
+
+     var xx = x0;
+     var yy = y0;
 
      // 差分計算の座標など
      var x = x0;
      var y = y0;
      var v_x = v_x0;
      var v_y = v_y0;
-     var a_x = a_x0;
-     var a_y = a_y0;
 
      // 定数
-     var red = "#FF0000";
-     var blue = "#0000FF";
+     var red = 'rgba(255, 0, 0, 0.5)';
+     var blue = 'rgba(0, 0, 255, 0.5)';
      var scale = 0.5;
 
      function start() {
+         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
          dt = parseFloat(document.getElementById("dt").value);
+         t = 0;
+         x = x0;
+         y = y0;
+         v_x = v_x0;
+         v_y = v_y0;
+
+         xx = x0;
+         yy = y0;
+
          showValues()
 
          setTimeout(draw, 10);
      }
 
      function draw() {
-         // ctx.clearRect(0, 0, canvas.width, canvas.height);
-         showValues();
-         drawBall(x, y, red);
-
-         v_x = v_x + a_x * dt;
-         v_y = v_y + a_y * dt;
-         x = x + v_x * dt;
-         y = y + v_y * dt;
+         drawAnalytic();
+         drawDiffCalc();
 
          if ( x < 0 || canvas.width < x * scale || y < 0 || canvas.height < y * scale) {
              return;
          }
+         t = t + dt;
          setTimeout(draw, 100 * dt);
      }
 
+     function drawDiffCalc() {
+         showValues();
+         drawBall(x, y, 3, red);
+
+         v_x = v_x + a_x0 * dt;
+         v_y = v_y + a_y0 * dt;
+         x = x + v_x * dt;
+         y = y + v_y * dt;
+     }
+
+     function drawAnalytic() {
+         ctx.beginPath();
+         ctx.moveTo(xx * scale, canvas.height - yy * scale);
+         xx = x0 + v_x0 * t + 1 / 2 * a_x0 * t * t;
+         yy = y0 + v_y0 * t + 1 / 2 * a_y0 * t * t;
+         ctx.strokeStyle = blue;
+         ctx.lineWidth = 3;
+         ctx.lineTo(xx * scale, canvas.height - yy * scale);
+         ctx.stroke();
+     }
+
      function showValues() {
+         document.getElementById("t").value = t;
          document.getElementById("x").value = x;
          document.getElementById("y").value = y;
      }
 
-     function drawBall(xVal, yVal, color) {
+     function drawBall(xVal, yVal, r, color) {
          ctx.beginPath();
-         ctx.arc(xVal * scale, canvas.height - yVal * scale, 2, 0, Math.PI*2);
+         ctx.arc(xVal * scale, canvas.height - yVal * scale, r, 0, Math.PI*2);
          ctx.fillStyle = color;
          ctx.fill();
          ctx.closePath();
