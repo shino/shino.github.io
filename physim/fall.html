@@ -12,46 +12,80 @@
 
     <canvas id="myCanvas" width="480" height="320"></canvas>
     <div id="params">
-        x = <input id="x" type="text">
-        y = <input id="y" type="text">
+        dt = <input id="dt" type="text" value="0.5">
     </div>
+
+    <div id="values">
+        x = <input id="x" type="text" disabled>
+        y = <input id="y" type="text" disabled>
+    </div>
+
+    <input type="button" id="start" value="Start!!" onclick="start()" />
 
     <script>
      var canvas = document.getElementById("myCanvas");
      var ctx = canvas.getContext("2d");
 
-     var x = canvas.width/2;
-     var y = canvas.height-30;
-     var dx = 2;
-     var dy = -2;
+     // 入力パラメータ
+     var dt = 0.5;
+     var a_x0 = 0;
+     var a_y0 = -9.8;
 
-     function draw() {
-         ctx.clearRect(0, 0, canvas.width, canvas.height);
-         drawBall();
-         setParams();
-         x += dx;
-         y += dy;
+     var x0 = 10;
+     var y0 = canvas.height - 50;
 
-         if ( x < 0 || canvas.width < x || y < 0 || canvas.height < y) {
-             return;
-         }
+     var v_x0 = 40;
+     var v_y0 = 40;
+
+     // 差分計算の座標など
+     var x = x0;
+     var y = y0;
+     var v_x = v_x0;
+     var v_y = v_y0;
+     var a_x = a_x0;
+     var a_y = a_y0;
+
+     // 定数
+     var red = "#FF0000";
+     var blue = "#0000FF";
+     var scale = 0.5;
+
+     function start() {
+         dt = parseFloat(document.getElementById("dt").value);
+         showValues()
+
          setTimeout(draw, 10);
      }
 
-     function setParams() {
+     function draw() {
+         // ctx.clearRect(0, 0, canvas.width, canvas.height);
+         showValues();
+         drawBall(x, y, red);
+
+         v_x = v_x + a_x * dt;
+         v_y = v_y + a_y * dt;
+         x = x + v_x * dt;
+         y = y + v_y * dt;
+
+         if ( x < 0 || canvas.width < x * scale || y < 0 || canvas.height < y * scale) {
+             return;
+         }
+         setTimeout(draw, 100 * dt);
+     }
+
+     function showValues() {
          document.getElementById("x").value = x;
          document.getElementById("y").value = y;
      }
 
-     function drawBall() {
+     function drawBall(xVal, yVal, color) {
          ctx.beginPath();
-         ctx.arc(x, y, 10, 0, Math.PI*2);
-         ctx.fillStyle = "#0095DD";
+         ctx.arc(xVal * scale, canvas.height - yVal * scale, 2, 0, Math.PI*2);
+         ctx.fillStyle = color;
          ctx.fill();
          ctx.closePath();
      }
 
-     setTimeout(draw, 10);
     </script>
 </body>
 </html>
