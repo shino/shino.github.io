@@ -38,12 +38,12 @@
          camera.position.set(0, 0, +1000);
 
          // 箱を作成
-         const geometry = new THREE.BoxGeometry(500, 500, 500);
+         const geometry = new THREE.SphereGeometry(30, 5, 5);
          const material = new THREE.MeshStandardMaterial({
-             color: 0x0000ff
+             color: 0x00ffff
          });
-         const box = new THREE.Mesh(geometry, material);
-         scene.add(box);
+         const ball = new THREE.Mesh(geometry, material);
+         scene.add(ball);
 
          // 平行光源
          const directionalLight = new THREE.DirectionalLight(
@@ -56,15 +56,27 @@
          // 初回実行
          renderer.render(scene, camera);
 
+         const dt = 0.1;
+         var ay = -9.8;
+         var x = -200;
+         var y = 0;
+         var vx = 50;
+         var vy = 50;
+         var t = 0;
+
          // 初回実行
          tick();
 
          function tick() {
              animationReqId = requestAnimationFrame(tick);
 
-             // 箱を回転させる
-             box.rotation.x += 0.01;
-             box.rotation.y += 0.01;
+             t = t + dt;
+
+             vx = vx;
+             vy = vy + ay * dt;
+             x = x + vx * dt;
+             y = y + vy * dt;
+             ball.position.set(x, y, 0);
 
              // レンダリング
              renderer.render(scene, camera);
