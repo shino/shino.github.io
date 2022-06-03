@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+        * { padding: 0; margin: 0; }
+        canvas { background: #eee; display: block; margin: 10px;}
+    </style>
+</head>
+<body>
+
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <div id="params">
+        dt = <input id="dt" type="text" value="0.1">
+    </div>
+
+    <div id="values">
+        t = <input id="t" type="text" disabled>
+        a = <input id="a" type="text" disabled>
+        v = <input id="v" type="text" disabled>
+        y = <input id="y" type="text" disabled>
+    </div>
+
+    <input type="button" id="start" value="Start!!" onclick="start()" />
+
+    <script>
+     var canvas = document.getElementById("myCanvas");
+     var ctx = canvas.getContext("2d");
+
+     var pi = 3.141592;
+     // 入力パラメータ
+     var dt = 0.1;
+     var k = 5;
+     var m = 30;
+     var a_y0 = 0;
+
+     var t = 0;
+
+     var yy = y0;
+
+     // 差分計算の座標など
+     var x_off = 100;
+     var y_off = 300;
+     var y0 = 0;
+     var v_y0 = 100;
+     var a_y0 = 0;
+     var y = y0;
+     var v_y = v_y0;
+     var a_y = a_y0;
+
+     // 定数
+     var red = 'rgba(255, 0, 0, 0.5)';
+     var blue = 'rgba(0, 0, 255, 0.5)';
+     var scale = 0.5;
+
+     function start() {
+         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+         dt = parseFloat(document.getElementById("dt").value);
+         t = 0;
+         y = y0;
+         v_y = v_y0;
+
+         yy = y0;
+
+         showValues()
+
+         setTimeout(draw, 10);
+     }
+
+     function draw() {
+         /* drawAnalytic(); */
+         drawDiffCalc();
+
+         /* if ( y < 0 || canvas.height < y * scale) {
+          *     return;
+          * } */
+         t = t + dt;
+         setTimeout(draw, 100 * dt);
+     }
+
+     function drawDiffCalc() {
+         drawBall(x_off, 0, y_off, y, 8, red);
+
+         a_y = - k * y / m;
+         v_y = v_y + a_y * dt;
+         y = y + v_y * dt;
+         /* console.log("a_y: ", a_y);
+          * console.log("v_y: ", v_y);
+          * console.log("y:   ", y); */
+     }
+
+     function drawAnalytic() {
+         ctx.beginPath();
+         ctx.moveTo(xx * scale, canvas.height - yy * scale);
+         xx = x0 + v_x0 * t + 1 / 2 * a_x0 * t * t;
+         yy = y0 + v_y0 * t + 1 / 2 * a_y0 * t * t;
+         ctx.strokeStyle = blue;
+         ctx.lineWidth = 3;
+         ctx.lineTo(xx * scale, canvas.height - yy * scale);
+         ctx.stroke();
+     }
+
+     function drawBall(xOff, xVal, yOff, yVal, r, color) {
+         var x = xOff + xVal * scale;
+         var y = canvas.height - yOff - yVal * scale;
+         ctx.clearRect(xOff - 50, canvas.height - yOff - 200, 100, 400);
+         ctx.beginPath();
+         // console.log("plot: (", x, ", ", y, ")");
+         ctx.arc(x, y, r, 0, Math.PI*2);
+         ctx.fillStyle = color;
+         ctx.fill();
+         ctx.closePath();
+     }
+
+     function showValues() {
+         document.getElementById("t").value = t;
+         document.getElementById("a").value = a_y;
+         document.getElementById("v").value = v_y;
+         document.getElementById("y").value = y;
+     }
+
+    </script>
+</body>
+</html>
