@@ -7,6 +7,7 @@
 <body>
     <input type="button" id="start" value="Start!!" onclick="init()" />
     <input type="button" id="stop" value="Stop!!" onclick="stop()" />
+    <br/>
     <canvas id="myCanvas"></canvas>
 
     <script>
@@ -27,6 +28,7 @@
 
          // シーンを作成
          const scene = new THREE.Scene();
+         scene.background = new THREE.Color( 0xaaaaaa );
 
          // カメラを作成
          const camera = new THREE.PerspectiveCamera(
@@ -38,9 +40,9 @@
          camera.position.set(0, 0, +1000);
 
          // 箱を作成
-         const geometry = new THREE.SphereGeometry(30, 5, 5);
+         const geometry = new THREE.SphereGeometry(40, 15, 15);
          const material = new THREE.MeshStandardMaterial({
-             color: 0x00ffff
+             color: 0xaaaaff
          });
          const ball = new THREE.Mesh(geometry, material);
          scene.add(ball);
@@ -53,16 +55,26 @@
          // シーンに追加
          scene.add(directionalLight);
 
+         const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff, lineWidth: 10 });
+
          // 初回実行
          renderer.render(scene, camera);
 
          const dt = 0.1;
-         var ay = -9.8;
-         var x = -200;
-         var y = 0;
-         var vx = 50;
-         var vy = 50;
+         const ay0 = -9.8;
+         const x0 = -200;
+         const y0 = 0;
+         const vx0 = 50;
+         const vy0 = 50;
+
          var t = 0;
+         var ay = ay0;
+         var x = x0;
+         var y = y0;
+         var vx = vx0;
+         var vy = vy0;
+
+         var p = new THREE.Vector3(x0, y0, 0);
 
          // 初回実行
          tick();
@@ -77,6 +89,15 @@
              x = x + vx * dt;
              y = y + vy * dt;
              ball.position.set(x, y, 0);
+
+             const xx = x0 + vx0 * t;
+             const yy = y0 + vy0 * t + 1 / 2 * ay0 * t * t;
+             const pNext = new THREE.Vector3(xx, yy,0);
+             var lineGeometry = new THREE.BufferGeometry().setFromPoints([p, pNext]);
+             var newline = new THREE.Line(lineGeometry, lineMaterial);
+             scene.add(newline);
+
+             p = pNext;
 
              // レンダリング
              renderer.render(scene, camera);
