@@ -11,12 +11,18 @@
         <li>赤っぽい線が解析解</li>
     </ul>
 
+    パラメーター
     <div id="params">
-        dt = <input id="dt" type="text" value="0.5">
+        <ul>
+            <li>
+                差分計算の時間ステップ: ⊿t = <input id="dt" type="text" value="0.5">
+            </li>
+        </ul>
     </div>
-    <input type="button" id="start" value="Start!!" onclick="init()" />
-    <input type="button" id="stop" value="Stop!!" onclick="stop()" />
-    <br/>
+    <div id="buttons">
+        <input type="button" id="start" value="Start!!" onclick="init()" />
+        <input type="button" id="stop" value="Stop!!" onclick="stop()" />
+    </div>
     <canvas id="myCanvas"></canvas>
 
     <script>
