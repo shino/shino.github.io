@@ -39,14 +39,6 @@
          );
          camera.position.set(0, 0, +1000);
 
-         // 箱を作成
-         const geometry = new THREE.SphereGeometry(40, 15, 15);
-         const material = new THREE.MeshStandardMaterial({
-             color: 0xaaaaff
-         });
-         const ball = new THREE.Mesh(geometry, material);
-         scene.add(ball);
-
          // 平行光源
          const directionalLight = new THREE.DirectionalLight(
              0xffffff
@@ -57,13 +49,14 @@
          // 初回実行
          renderer.render(scene, camera);
 
-         const dt = 1;
+         const dt = 0.1;
          const ay0 = -9.8;
          const x0 = -200;
          const y0 = 0;
          const vx0 = 50;
          const vy0 = 50;
 
+         var clock = Date.now();
          var t = 0;
          var ay = ay0;
          var x = x0;
@@ -79,12 +72,26 @@
          function tick() {
              animationReqId = requestAnimationFrame(tick);
 
+             const now = Date.now();
+             if (now - clock < 300 * dt) {
+                 return;
+             }
+             clock = now;
+
              t = t + dt;
 
+             // 差分の計算
              vx = vx;
              vy = vy + ay * dt;
              x = x + vx * dt;
              y = y + vy * dt;
+             const geometry = new THREE.SphereGeometry(5, 5, 5);
+             const material = new THREE.MeshStandardMaterial({
+                 color: 0xaaaaff
+             });
+             const ball = new THREE.Mesh(geometry, material);
+             scene.add(ball);
+
              ball.position.set(x, y, 0);
 
              const xx = x0 + vx0 * t;
