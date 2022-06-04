@@ -5,6 +5,15 @@
   <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
 </head>
 <body>
+    重力のみの落下運動を、差分による数値計算と解析解(放物線)をプロットする。
+    <ul>
+        <li>青っぽいボールが差分計算結果</li>
+        <li>赤っぽい線が解析解</li>
+    </ul>
+
+    <div id="params">
+        dt = <input id="dt" type="text" value="0.5">
+    </div>
     <input type="button" id="start" value="Start!!" onclick="init()" />
     <input type="button" id="stop" value="Stop!!" onclick="stop()" />
     <br/>
@@ -49,7 +58,7 @@
          // 初回実行
          renderer.render(scene, camera);
 
-         const dt = 0.1;
+         var dt;
          const ay0 = -9.8;
          const x0 = -200;
          const y0 = 0;
@@ -71,6 +80,8 @@
 
          function tick() {
              animationReqId = requestAnimationFrame(tick);
+
+             dt = parseFloat(document.getElementById("dt").value);
 
              const now = Date.now();
              if (now - clock < 300 * dt) {
