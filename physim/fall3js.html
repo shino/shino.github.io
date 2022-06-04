@@ -51,16 +51,13 @@
          const directionalLight = new THREE.DirectionalLight(
              0xffffff
          );
-         directionalLight.position.set(1, 1, 1);
-         // シーンに追加
+         directionalLight.position.set(-1, 0.5, 1);
          scene.add(directionalLight);
-
-         const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff, lineWidth: 10 });
 
          // 初回実行
          renderer.render(scene, camera);
 
-         const dt = 0.1;
+         const dt = 1;
          const ay0 = -9.8;
          const x0 = -200;
          const y0 = 0;
@@ -93,11 +90,25 @@
              const xx = x0 + vx0 * t;
              const yy = y0 + vy0 * t + 1 / 2 * ay0 * t * t;
              const pNext = new THREE.Vector3(xx, yy,0);
-             var lineGeometry = new THREE.BufferGeometry().setFromPoints([p, pNext]);
-             var newline = new THREE.Line(lineGeometry, lineMaterial);
-             scene.add(newline);
+             const lineHeight = p.distanceTo(pNext);
+             const lineGeometry = new THREE.CylinderGeometry(5, 5, lineHeight, 5, 5, true);
+             const lineMaterial = new THREE.MeshStandardMaterial({
+                 color: 0xffaa00
+             });
+             const newLine = new THREE.Mesh( lineGeometry, lineMaterial );
+             const mid = p.clone().add(pNext).divideScalar(2);
+             newLine.position.set(mid.x, mid.y, mid.z);
+             const axis = new THREE.Vector3(0, 1, 0);
+             // (pNext - p) のノーマライズ
+             const direction = pNext.clone().add(p.negate()).normalize();
+             newLine.quaternion.setFromUnitVectors(axis, direction);
+             scene.add(newLine);
 
              p = pNext;
+
+             if(y < - height * 0.7) {
+                 stop();
+             }
 
              // レンダリング
              renderer.render(scene, camera);
